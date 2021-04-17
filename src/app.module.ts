@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configModule } from './configure.root';
 import { UsersModule } from './modules/users/users.module';
-import { FacultysModule } from './modules/facultys/facultys.module';
+import { FacultiesModule } from './modules/faculties/faculties.module';
 import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
@@ -10,7 +10,7 @@ import { RolesModule } from './modules/roles/roles.module';
     configModule,
     TypeOrmModule.forRoot(),
     UsersModule,
-    FacultysModule,
+    FacultiesModule,
     RolesModule,
   ],
   controllers: [],
