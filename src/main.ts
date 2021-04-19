@@ -16,6 +16,7 @@ async function bootstrap() {
     .setTitle('DWA')
     .setDescription('DWA API documentation')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
   const customOptions: SwaggerCustomOptions = {
     swaggerOptions: {

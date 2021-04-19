@@ -22,15 +22,25 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({
+    nullable: true,
+  })
+  @Exclude()
+  public currentHashedRefreshToken?: string;
+
   @ApiProperty()
   @Column({ default: true })
   isActive: boolean;
 
   @ApiProperty()
-  @ManyToOne(() => Faculty, (faculty) => faculty.user)
+  @ManyToOne(() => Faculty, (faculty) => faculty.user, {
+    eager: true,
+  })
   faculty: Faculty;
 
   @ApiProperty()
-  @ManyToOne(() => Role, (role) => role.user)
+  @ManyToOne(() => Role, (role) => role.user, {
+    eager: true,
+  })
   role: Role;
 }

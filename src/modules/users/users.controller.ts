@@ -35,6 +35,10 @@ export class UsersController {
     description: 'The user has been successfully created.',
     type: User,
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Creation failed',
+  })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
