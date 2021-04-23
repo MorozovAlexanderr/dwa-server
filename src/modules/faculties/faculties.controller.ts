@@ -33,7 +33,7 @@ export class FacultiesController {
     type: Faculty,
   })
   @Post()
-  create(@Body() createFacultyDto: CreateFacultyDto) {
+  create(@Body() createFacultyDto: CreateFacultyDto): Promise<Faculty> {
     return this.facultiesService.create(createFacultyDto);
   }
 
@@ -43,7 +43,7 @@ export class FacultiesController {
     type: [Faculty],
   })
   @Get()
-  findAll() {
+  findAll(): Promise<Faculty[]> {
     return this.facultiesService.findAll();
   }
 
@@ -56,7 +56,7 @@ export class FacultiesController {
     description: 'Faculty not found',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Faculty> {
     return this.facultiesService.findById(id);
   }
 

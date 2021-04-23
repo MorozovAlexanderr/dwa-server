@@ -22,7 +22,7 @@ export class FacultiesService {
   }
 
   async findById(id: number): Promise<Faculty> {
-    const faculty = this.facultyRepository.findOne(id);
+    const faculty = await this.facultyRepository.findOne(id);
     if (faculty) {
       return faculty;
     }

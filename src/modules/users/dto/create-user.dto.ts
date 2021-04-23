@@ -1,5 +1,5 @@
 import { Faculty } from '../../faculties/entities/faculty.entity';
-import { Role } from '../../roles/entities/role.entity';
+import { Position } from '../../positions/entities/position.entity';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -23,6 +23,6 @@ export class CreateUserDto {
   @ApiProperty({ type: Faculty })
   faculty: Faculty;
 
-  @ApiProperty({ type: Role })
-  role: Role;
+  @ApiProperty({ type: Position })
+  position: Position;
 }

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Faculty } from '../../faculties/entities/faculty.entity';
-import { Role } from '../../roles/entities/role.entity';
+import { Position } from '../../positions/entities/position.entity';
 
 export class UserRegisterDto {
   @ApiProperty()
@@ -23,6 +23,6 @@ export class UserRegisterDto {
   @ApiProperty({ type: Faculty })
   faculty: Faculty;
 
-  @ApiProperty({ type: Role })
-  role: Role;
+  @ApiProperty({ type: Position })
+  position: Position;
 }

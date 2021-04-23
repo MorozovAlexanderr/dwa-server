@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configModule } from './configure.root';
 import { UsersModule } from './modules/users/users.module';
 import { FacultiesModule } from './modules/faculties/faculties.module';
-import { RolesModule } from './modules/roles/roles.module';
+import { PositionsModule } from './modules/positions/positions.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -12,7 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
     TypeOrmModule.forRoot(),
     UsersModule,
     FacultiesModule,
-    RolesModule,
+    PositionsModule,
     AuthModule,
   ],
   controllers: [],

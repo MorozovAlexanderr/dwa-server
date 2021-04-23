@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Faculty } from '../../faculties/entities/faculty.entity';
-import { Role } from '../../roles/entities/role.entity';
+import { Position } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -39,8 +39,8 @@ export class User {
   faculty: Faculty;
 
   @ApiProperty()
-  @ManyToOne(() => Role, (role) => role.user, {
+  @ManyToOne(() => Position, (position) => position.user, {
     eager: true,
   })
-  role: Role;
+  position: Position;
 }

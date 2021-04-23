@@ -3,7 +3,7 @@ import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
-export class Role {
+export class Position {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,6 +16,6 @@ export class Role {
   @Column()
   priority: number;
 
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany(() => User, (user) => user.position)
   user: User[];
 }

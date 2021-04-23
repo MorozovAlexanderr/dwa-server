@@ -40,7 +40,7 @@ export class UsersController {
     description: 'Creation failed',
   })
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
 
@@ -50,7 +50,7 @@ export class UsersController {
     type: [User],
   })
   @Get()
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
@@ -63,7 +63,7 @@ export class UsersController {
     description: 'User not found',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this.usersService.findById(id);
   }
 
