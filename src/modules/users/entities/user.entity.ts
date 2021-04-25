@@ -6,14 +6,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Faculty } from '../../faculties/entities/faculty.entity';
-import { Position } from '../../positions/entities/position.entity';
+import { FacultyEntity } from '../../faculties/entities/faculty.entity';
+import { PositionEntity } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../../common/enums/roles.enum';
 
 @Entity({ name: 'users' })
-export class User {
+export class UserEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -41,16 +41,16 @@ export class User {
   isActive: boolean;
 
   @ApiProperty()
-  @ManyToOne(() => Faculty, (faculty) => faculty.user, {
+  @ManyToOne(() => FacultyEntity, (faculty) => faculty.user, {
     eager: true,
   })
-  faculty: Faculty;
+  faculty: FacultyEntity;
 
   @ApiProperty()
-  @ManyToOne(() => Position, (position) => position.user, {
+  @ManyToOne(() => PositionEntity, (position) => position.user, {
     eager: true,
   })
-  position: Position;
+  position: PositionEntity;
 
   @ApiProperty()
   @Column({

@@ -3,26 +3,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
-import { Position } from './entities/position.entity';
+import { PositionEntity } from './entities/position.entity';
 
 @Injectable()
 export class PositionsService {
   constructor(
-    @InjectRepository(Position)
-    private positionRepository: Repository<Position>,
+    @InjectRepository(PositionEntity)
+    private positionRepository: Repository<PositionEntity>,
   ) {}
 
-  async create(createPositionDto: CreatePositionDto): Promise<Position> {
+  async create(createPositionDto: CreatePositionDto): Promise<PositionEntity> {
     const newPosition = this.positionRepository.create(createPositionDto);
     await this.positionRepository.save(newPosition);
     return newPosition;
   }
 
-  async findAll(): Promise<Position[]> {
+  async findAll(): Promise<PositionEntity[]> {
     return await this.positionRepository.find();
   }
 
-  async findById(id: number): Promise<Position> {
+  async findById(id: number): Promise<PositionEntity> {
     const position = await this.positionRepository.findOne(id);
     if (position) {
       return position;

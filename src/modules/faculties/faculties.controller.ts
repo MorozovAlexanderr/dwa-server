@@ -21,7 +21,7 @@ import {
 import { FacultiesService } from './faculties.service';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
-import { Faculty } from './entities/faculty.entity';
+import { FacultyEntity } from './entities/faculty.entity';
 import { UserRole } from '../../common/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 
@@ -36,33 +36,33 @@ export class FacultiesController {
   @ApiBody({ type: CreateFacultyDto })
   @ApiCreatedResponse({
     description: 'The faculty has been successfully created.',
-    type: Faculty,
+    type: FacultyEntity,
   })
   @Post()
-  create(@Body() createFacultyDto: CreateFacultyDto): Promise<Faculty> {
+  create(@Body() createFacultyDto: CreateFacultyDto): Promise<FacultyEntity> {
     return this.facultiesService.create(createFacultyDto);
   }
 
   @ApiOperation({ summary: 'Get all faculties' })
   @ApiResponse({
     status: 200,
-    type: [Faculty],
+    type: [FacultyEntity],
   })
   @Get()
-  findAll(): Promise<Faculty[]> {
+  findAll(): Promise<FacultyEntity[]> {
     return this.facultiesService.findAll();
   }
 
   @ApiOperation({ summary: 'Get faculty by id' })
   @ApiResponse({
     status: 200,
-    type: Faculty,
+    type: FacultyEntity,
   })
   @ApiNotFoundResponse({
     description: 'Faculty not found',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Faculty> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<FacultyEntity> {
     return this.facultiesService.findById(id);
   }
 

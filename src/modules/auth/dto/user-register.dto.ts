@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { Faculty } from '../../faculties/entities/faculty.entity';
-import { Position } from '../../positions/entities/position.entity';
+import { FacultyEntity } from '../../faculties/entities/faculty.entity';
+import { PositionEntity } from '../../positions/entities/position.entity';
 
 export class UserRegisterDto {
   @ApiProperty()
@@ -20,9 +20,9 @@ export class UserRegisterDto {
   @Length(7, 25)
   password: string;
 
-  @ApiProperty({ type: Faculty })
-  faculty: Faculty;
+  @ApiProperty({ type: FacultyEntity })
+  faculty: FacultyEntity;
 
-  @ApiProperty({ type: Position })
-  position: Position;
+  @ApiProperty({ type: PositionEntity })
+  position: PositionEntity;
 }

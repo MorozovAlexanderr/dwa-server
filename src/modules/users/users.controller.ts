@@ -23,7 +23,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { UserRole } from '../../common/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 
@@ -39,37 +39,37 @@ export class UsersController {
   @ApiBody({ type: CreateUserDto })
   @ApiCreatedResponse({
     description: 'The user has been successfully created.',
-    type: User,
+    type: UserEntity,
   })
   @ApiResponse({
     status: 404,
     description: 'Creation failed',
   })
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
     return this.usersService.create(createUserDto);
   }
 
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
     status: 200,
-    type: [User],
+    type: [UserEntity],
   })
   @Get()
-  findAll(): Promise<User[]> {
+  findAll(): Promise<UserEntity[]> {
     return this.usersService.findAll();
   }
 
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({
     status: 200,
-    type: User,
+    type: UserEntity,
   })
   @ApiNotFoundResponse({
     description: 'User not found',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
     return this.usersService.findById(id);
   }
 

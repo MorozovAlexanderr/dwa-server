@@ -2,27 +2,28 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from './entities/user.entity';
+import { UserEntity } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     const newUser = await this.usersRepository.create(createUserDto);
     await this.usersRepository.save(newUser);
     return newUser;
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.usersRepository.find();
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<UserEntity> {
     const user = await this.usersRepository.findOne({ email });
     if (user) {
       return user;
@@ -33,7 +34,7 @@ export class UsersService {
     );
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: number): Promise<UserEntity> {
     const user = await this.usersRepository.findOne(id);
     if (user) {
       return user;

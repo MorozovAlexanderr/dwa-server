@@ -23,7 +23,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { UsersService } from '../users/users.service';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
-import { User } from '../users/entities/user.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { UserLoginDto } from './dto/user-login.dto';
 import { Auth } from './decorators/auth.decorator';
 import { UserRole } from '../../common/enums/roles.enum';
@@ -40,7 +40,7 @@ export class AuthController {
   @ApiBody({ type: UserRegisterDto })
   @ApiCreatedResponse({
     description: 'The user has been successfully registered.',
-    type: [User],
+    type: [UserEntity],
   })
   @ApiResponse({
     status: 404,

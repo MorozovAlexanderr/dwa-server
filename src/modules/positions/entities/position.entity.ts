@@ -6,11 +6,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'positions' })
-export class Position {
+export class PositionEntity {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,8 +23,8 @@ export class Position {
   @Column()
   priority: number;
 
-  @OneToMany(() => User, (user) => user.position)
-  user: User[];
+  @OneToMany(() => UserEntity, (user) => user.position)
+  user: UserEntity[];
 
   @CreateDateColumn({
     type: 'timestamp',

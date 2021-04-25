@@ -20,7 +20,7 @@ import {
 import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
-import { Position } from './entities/position.entity';
+import { PositionEntity } from './entities/position.entity';
 import { UserRole } from '../../common/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 
@@ -35,33 +35,35 @@ export class PositionsController {
   @ApiBody({ type: CreatePositionDto })
   @ApiCreatedResponse({
     description: 'The position has been successfully created.',
-    type: Position,
+    type: PositionEntity,
   })
   @Post()
-  create(@Body() createPositionDto: CreatePositionDto): Promise<Position> {
+  create(
+    @Body() createPositionDto: CreatePositionDto,
+  ): Promise<PositionEntity> {
     return this.positionsService.create(createPositionDto);
   }
 
   @ApiOperation({ summary: 'Get all positions' })
   @ApiResponse({
     status: 200,
-    type: [Position],
+    type: [PositionEntity],
   })
   @Get()
-  findAll(): Promise<Position[]> {
+  findAll(): Promise<PositionEntity[]> {
     return this.positionsService.findAll();
   }
 
   @ApiOperation({ summary: 'Get position by id' })
   @ApiResponse({
     status: 200,
-    type: Position,
+    type: PositionEntity,
   })
   @ApiNotFoundResponse({
     description: 'Position not found',
   })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<Position> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<PositionEntity> {
     return this.positionsService.findById(id);
   }
 
