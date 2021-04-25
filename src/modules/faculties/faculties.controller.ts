@@ -7,11 +7,10 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
-import { FacultiesService } from './faculties.service';
-import { CreateFacultyDto } from './dto/create-faculty.dto';
-import { UpdateFacultyDto } from './dto/update-faculty.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -19,9 +18,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { FacultiesService } from './faculties.service';
+import { CreateFacultyDto } from './dto/create-faculty.dto';
+import { UpdateFacultyDto } from './dto/update-faculty.dto';
 import { Faculty } from './entities/faculty.entity';
+import { UserRole } from '../../common/enums/roles.enum';
+import { Auth } from '../auth/decorators/auth.decorator';
 
 @ApiTags('faculties')
+@ApiBearerAuth()
+@Auth(UserRole.ADMIN)
 @Controller('faculties')
 export class FacultiesController {
   constructor(private readonly facultiesService: FacultiesService) {}

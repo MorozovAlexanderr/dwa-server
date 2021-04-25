@@ -1,17 +1,15 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
-import { PositionsService } from './positions.service';
-import { CreatePositionDto } from './dto/create-position.dto';
-import { UpdatePositionDto } from './dto/update-position.dto';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiNotFoundResponse,
@@ -19,9 +17,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { PositionsService } from './positions.service';
+import { CreatePositionDto } from './dto/create-position.dto';
+import { UpdatePositionDto } from './dto/update-position.dto';
 import { Position } from './entities/position.entity';
+import { UserRole } from '../../common/enums/roles.enum';
+import { Auth } from '../auth/decorators/auth.decorator';
 
 @ApiTags('positions')
+@ApiBearerAuth()
+@Auth(UserRole.ADMIN)
 @Controller('positions')
 export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}

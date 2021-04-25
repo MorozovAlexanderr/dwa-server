@@ -1,10 +1,18 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Faculty } from '../../faculties/entities/faculty.entity';
 import { Position } from '../../positions/entities/position.entity';
 import { Exclude } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserRole } from '../../../common/enums/roles.enum';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @ApiProperty()
   @PrimaryGeneratedColumn()
@@ -43,4 +51,23 @@ export class User {
     eager: true,
   })
   position: Position;
+
+  @ApiProperty()
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
+  updatedAt: Date;
 }

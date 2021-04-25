@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateFacultyDto } from './dto/create-faculty.dto';
 import { UpdateFacultyDto } from './dto/update-faculty.dto';
-import { Repository } from 'typeorm';
 import { Faculty } from './entities/faculty.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class FacultiesService {

@@ -23,9 +23,10 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { UsersService } from '../users/users.service';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
-import JwtAuthGuard from './guards/jwt.-auth.guard';
 import { User } from '../users/entities/user.entity';
 import { UserLoginDto } from './dto/user-login.dto';
+import { Auth } from './decorators/auth.decorator';
+import { UserRole } from '../../common/enums/roles.enum';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -97,7 +98,7 @@ export class AuthController {
     description: 'Unauthorised',
   })
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
+  @Auth(UserRole.ADMIN, UserRole.USER)
   @Post('logout')
   async logOut(@Req() request: RequestWithUser) {
     await this.usersService.removeRefreshToken(request.user.id);

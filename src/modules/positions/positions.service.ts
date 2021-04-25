@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePositionDto } from './dto/create-position.dto';
 import { UpdatePositionDto } from './dto/update-position.dto';
-import { Repository } from 'typeorm';
 import { Position } from './entities/position.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PositionsService {
