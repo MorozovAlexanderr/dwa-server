@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -19,15 +18,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FacultiesService } from './faculties.service';
-import { CreateFacultyDto } from './dto/create-faculty.dto';
-import { UpdateFacultyDto } from './dto/update-faculty.dto';
-import { FacultyEntity } from './entities/faculty.entity';
+import { CreateFacultyDto } from './dtos/create-faculty.dto';
+import { UpdateFacultyDto } from './dtos/update-faculty.dto';
 import { UserRole } from '../../common/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { FacultyDto } from './dtos/faculty.dto';
 
 @ApiTags('faculties')
-@ApiBearerAuth()
-@Auth(UserRole.ADMIN)
 @Controller('faculties')
 export class FacultiesController {
   constructor(private readonly facultiesService: FacultiesService) {}
@@ -36,34 +33,40 @@ export class FacultiesController {
   @ApiBody({ type: CreateFacultyDto })
   @ApiCreatedResponse({
     description: 'The faculty has been successfully created.',
-    type: FacultyEntity,
+    type: FacultyDto,
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Post()
-  create(@Body() createFacultyDto: CreateFacultyDto): Promise<FacultyEntity> {
+  create(@Body() createFacultyDto: CreateFacultyDto): Promise<FacultyDto> {
     return this.facultiesService.create(createFacultyDto);
   }
 
   @ApiOperation({ summary: 'Get all faculties' })
   @ApiResponse({
     status: 200,
-    type: [FacultyEntity],
+    type: [FacultyDto],
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Get()
-  findAll(): Promise<FacultyEntity[]> {
-    return this.facultiesService.findAll();
+  getAll(): Promise<FacultyDto[]> {
+    return this.facultiesService.getAll();
   }
 
   @ApiOperation({ summary: 'Get faculty by id' })
   @ApiResponse({
     status: 200,
-    type: FacultyEntity,
+    type: FacultyDto,
   })
   @ApiNotFoundResponse({
     description: 'Faculty not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<FacultyEntity> {
-    return this.facultiesService.findById(id);
+  getOne(@Param('id', ParseIntPipe) id: number): Promise<FacultyDto> {
+    return this.facultiesService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update faculty by id' })
@@ -73,6 +76,8 @@ export class FacultiesController {
   @ApiNotFoundResponse({
     description: 'Faculty not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -88,6 +93,8 @@ export class FacultiesController {
   @ApiNotFoundResponse({
     description: 'Faculty not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.facultiesService.remove(id);

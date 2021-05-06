@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { UserRegisterDto } from './dto/user-register.dto';
+import { UserRegisterDto } from './dtos/user-register.dto';
 import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { TokenPayload } from './interfaces/token-payload.interface';
 
@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findOne({ email });
     const isMatchPass = user
       ? await bcrypt.compare(password, user.password)
       : false;

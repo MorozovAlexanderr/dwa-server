@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePositionDto } from './dto/create-position.dto';
-import { UpdatePositionDto } from './dto/update-position.dto';
+import { CreatePositionDto } from './dtos/create-position.dto';
+import { UpdatePositionDto } from './dtos/update-position.dto';
 import { PositionEntity } from './entities/position.entity';
+import { PositionDto } from './dtos/position.dto';
 
 @Injectable()
 export class PositionsService {
@@ -12,20 +13,21 @@ export class PositionsService {
     private positionRepository: Repository<PositionEntity>,
   ) {}
 
-  async create(createPositionDto: CreatePositionDto): Promise<PositionEntity> {
+  async create(createPositionDto: CreatePositionDto): Promise<PositionDto> {
     const newPosition = this.positionRepository.create(createPositionDto);
     await this.positionRepository.save(newPosition);
-    return newPosition;
+    return newPosition.toDto();
   }
 
-  async findAll(): Promise<PositionEntity[]> {
-    return await this.positionRepository.find();
+  async getAll(): Promise<PositionDto[]> {
+    const positions = await this.positionRepository.find();
+    return positions.map((p) => p.toDto());
   }
 
-  async findById(id: number): Promise<PositionEntity> {
+  async getById(id: number): Promise<PositionDto> {
     const position = await this.positionRepository.findOne(id);
     if (position) {
-      return position;
+      return position.toDto();
     }
     throw new HttpException(
       'Position with this id does not exists',

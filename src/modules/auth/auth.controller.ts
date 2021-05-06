@@ -17,14 +17,14 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { UserRegisterDto } from './dto/user-register.dto';
+import { UserRegisterDto } from './dtos/user-register.dto';
 import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { UsersService } from '../users/users.service';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { UserEntity } from '../users/entities/user.entity';
-import { UserLoginDto } from './dto/user-login.dto';
+import { UserLoginDto } from './dtos/user-login.dto';
 import { Auth } from './decorators/auth.decorator';
 import { UserRole } from '../../common/enums/roles.enum';
 

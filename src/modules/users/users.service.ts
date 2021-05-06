@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindConditions, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserDto } from './dtos/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -19,25 +20,14 @@ export class UsersService {
     return newUser;
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    return await this.usersRepository.find();
+  async findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {
+    return this.usersRepository.findOne(findData);
   }
 
-  async findByEmail(email: string): Promise<UserEntity> {
-    const user = await this.usersRepository.findOne({ email });
-    if (user) {
-      return user;
-    }
-    throw new HttpException(
-      'User with this email does not exists',
-      HttpStatus.NOT_FOUND,
-    );
-  }
-
-  async findById(id: number): Promise<UserEntity> {
+  async getUser(id: number): Promise<UserDto> {
     const user = await this.usersRepository.findOne(id);
     if (user) {
-      return user;
+      return user.toDto();
     }
     throw new HttpException(
       'User with this id does not exists',
@@ -49,17 +39,13 @@ export class UsersService {
     await this.usersRepository.update(id, updateUserDto);
   }
 
-  async remove(id: number) {
-    await this.usersRepository.delete(id);
-  }
-
   async setCurrentRefreshToken(refreshToken: string, userId: number) {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     await this.usersRepository.update(userId, { currentHashedRefreshToken });
   }
 
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
-    const user = await this.findById(userId);
+    const user = await this.findOne({ id: userId });
 
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,

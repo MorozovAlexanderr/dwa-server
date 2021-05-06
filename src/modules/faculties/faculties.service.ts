@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateFacultyDto } from './dto/create-faculty.dto';
-import { UpdateFacultyDto } from './dto/update-faculty.dto';
+import { CreateFacultyDto } from './dtos/create-faculty.dto';
+import { UpdateFacultyDto } from './dtos/update-faculty.dto';
 import { FacultyEntity } from './entities/faculty.entity';
+import { FacultyDto } from './dtos/faculty.dto';
 
 @Injectable()
 export class FacultiesService {
@@ -12,20 +13,21 @@ export class FacultiesService {
     private facultyRepository: Repository<FacultyEntity>,
   ) {}
 
-  async create(createFacultyDto: CreateFacultyDto): Promise<FacultyEntity> {
+  async create(createFacultyDto: CreateFacultyDto): Promise<FacultyDto> {
     const newFaculty = this.facultyRepository.create(createFacultyDto);
     await this.facultyRepository.save(newFaculty);
-    return newFaculty;
+    return newFaculty.toDto();
   }
 
-  async findAll(): Promise<FacultyEntity[]> {
-    return await this.facultyRepository.find();
+  async getAll(): Promise<FacultyDto[]> {
+    const faculties = await this.facultyRepository.find();
+    return faculties.map((f) => f.toDto());
   }
 
-  async findById(id: number): Promise<FacultyEntity> {
+  async getById(id: number): Promise<FacultyDto> {
     const faculty = await this.facultyRepository.findOne(id);
     if (faculty) {
-      return faculty;
+      return faculty.toDto();
     }
     throw new HttpException(
       'Faculty with this id does not exists',

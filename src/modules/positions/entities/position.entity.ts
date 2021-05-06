@@ -7,19 +7,17 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { AbstractEntity } from '../../../common/entities/abstract.entity';
+import { PositionDto } from '../dtos/position.dto';
 
 @Entity({ name: 'positions' })
-export class PositionEntity {
-  @ApiProperty()
+export class PositionEntity extends AbstractEntity<PositionDto> {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty()
   @Column()
   name: string;
 
-  @ApiProperty()
   @Column()
   priority: number;
 
@@ -36,4 +34,6 @@ export class PositionEntity {
     nullable: true,
   })
   updatedAt: Date;
+
+  dtoClass = PositionDto;
 }

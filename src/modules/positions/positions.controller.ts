@@ -18,15 +18,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PositionsService } from './positions.service';
-import { CreatePositionDto } from './dto/create-position.dto';
-import { UpdatePositionDto } from './dto/update-position.dto';
-import { PositionEntity } from './entities/position.entity';
+import { CreatePositionDto } from './dtos/create-position.dto';
+import { UpdatePositionDto } from './dtos/update-position.dto';
 import { UserRole } from '../../common/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { PositionDto } from './dtos/position.dto';
 
 @ApiTags('positions')
-@ApiBearerAuth()
-@Auth(UserRole.ADMIN)
 @Controller('positions')
 export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}
@@ -35,36 +33,40 @@ export class PositionsController {
   @ApiBody({ type: CreatePositionDto })
   @ApiCreatedResponse({
     description: 'The position has been successfully created.',
-    type: PositionEntity,
+    type: PositionDto,
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Post()
-  create(
-    @Body() createPositionDto: CreatePositionDto,
-  ): Promise<PositionEntity> {
+  create(@Body() createPositionDto: CreatePositionDto): Promise<PositionDto> {
     return this.positionsService.create(createPositionDto);
   }
 
   @ApiOperation({ summary: 'Get all positions' })
   @ApiResponse({
     status: 200,
-    type: [PositionEntity],
+    type: [PositionDto],
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Get()
-  findAll(): Promise<PositionEntity[]> {
-    return this.positionsService.findAll();
+  getAll(): Promise<PositionDto[]> {
+    return this.positionsService.getAll();
   }
 
   @ApiOperation({ summary: 'Get position by id' })
   @ApiResponse({
     status: 200,
-    type: PositionEntity,
+    type: PositionDto,
   })
   @ApiNotFoundResponse({
     description: 'Position not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<PositionEntity> {
-    return this.positionsService.findById(id);
+  getOne(@Param('id', ParseIntPipe) id: number): Promise<PositionDto> {
+    return this.positionsService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update position by id' })
@@ -74,6 +76,8 @@ export class PositionsController {
   @ApiNotFoundResponse({
     description: 'Position not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -89,6 +93,8 @@ export class PositionsController {
   @ApiNotFoundResponse({
     description: 'Position not found',
   })
+  @ApiBearerAuth()
+  @Auth(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.positionsService.remove(id);

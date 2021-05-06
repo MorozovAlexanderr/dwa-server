@@ -6,23 +6,21 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { FacultyEntity } from '../../faculties/entities/faculty.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
-import { Exclude } from 'class-transformer';
-import { ApiProperty } from '@nestjs/swagger';
 import { UserRole } from '../../../common/enums/roles.enum';
+import { AbstractEntity } from '../../../common/entities/abstract.entity';
+import { UserDto } from '../dtos/user.dto';
 
 @Entity({ name: 'users' })
-export class UserEntity {
-  @ApiProperty()
+export class UserEntity extends AbstractEntity<UserDto> {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty()
   @Column()
   username: string;
 
-  @ApiProperty()
   @Column({ unique: true })
   email: string;
 
@@ -36,23 +34,19 @@ export class UserEntity {
   @Exclude()
   public currentHashedRefreshToken?: string;
 
-  @ApiProperty()
   @Column({ default: true })
   isActive: boolean;
 
-  @ApiProperty()
   @ManyToOne(() => FacultyEntity, (faculty) => faculty.user, {
     eager: true,
   })
   faculty: FacultyEntity;
 
-  @ApiProperty()
   @ManyToOne(() => PositionEntity, (position) => position.user, {
     eager: true,
   })
   position: PositionEntity;
 
-  @ApiProperty()
   @Column({
     type: 'enum',
     enum: UserRole,
@@ -70,4 +64,6 @@ export class UserEntity {
     nullable: true,
   })
   updatedAt: Date;
+
+  dtoClass = UserDto;
 }
