@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import { UserRegisterDto } from './dtos/user-register.dto';
+import { RegisterUserDto } from './dtos/user-register.dto';
 import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { TokenPayload } from './interfaces/token-payload.interface';
 
@@ -26,7 +26,7 @@ export class AuthService {
     return null;
   }
 
-  async register(user: UserRegisterDto): Promise<RegistrationStatus> {
+  async register(user: RegisterUserDto): Promise<RegistrationStatus> {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     let status: RegistrationStatus = {
       success: true,

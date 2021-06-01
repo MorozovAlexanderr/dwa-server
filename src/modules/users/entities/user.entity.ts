@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { FacultyEntity } from '../../faculties/entities/faculty.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
 import { UserRole } from '../../../common/enums/roles.enum';
@@ -25,13 +24,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
   email: string;
 
   @Column()
-  @Exclude()
   password: string;
 
   @Column({
     nullable: true,
   })
-  @Exclude()
   public currentHashedRefreshToken?: string;
 
   @Column({ default: true })

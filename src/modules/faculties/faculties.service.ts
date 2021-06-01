@@ -14,7 +14,7 @@ export class FacultiesService {
   ) {}
 
   async create(createFacultyDto: CreateFacultyDto): Promise<FacultyDto> {
-    const newFaculty = this.facultyRepository.create(createFacultyDto);
+    const newFaculty = await this.facultyRepository.create(createFacultyDto);
     await this.facultyRepository.save(newFaculty);
     return newFaculty.toDto();
   }
@@ -35,8 +35,17 @@ export class FacultiesService {
     );
   }
 
-  async update(id: number, updateFacultyDto: UpdateFacultyDto) {
-    await this.facultyRepository.update(id, updateFacultyDto);
+  async update(
+    id: number,
+    updateFacultyDto: UpdateFacultyDto,
+  ): Promise<FacultyDto> {
+    if (updateFacultyDto.name) {
+      await this.facultyRepository.update(id, {
+        name: updateFacultyDto.name,
+      });
+    }
+
+    return this.getById(id);
   }
 
   async remove(id: number) {

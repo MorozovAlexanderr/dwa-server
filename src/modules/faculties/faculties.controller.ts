@@ -29,6 +29,8 @@ import { FacultyDto } from './dtos/faculty.dto';
 export class FacultiesController {
   constructor(private readonly facultiesService: FacultiesService) {}
 
+  // TODO: endpoint for getting faculties with public access (using in registration)
+
   @ApiOperation({ summary: 'Create faculty' })
   @ApiBody({ type: CreateFacultyDto })
   @ApiCreatedResponse({
@@ -82,7 +84,7 @@ export class FacultiesController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateFacultyDto: UpdateFacultyDto,
-  ) {
+  ): Promise<FacultyDto> {
     return this.facultiesService.update(id, updateFacultyDto);
   }
 

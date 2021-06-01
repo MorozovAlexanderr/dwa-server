@@ -14,7 +14,7 @@ export class PositionsService {
   ) {}
 
   async create(createPositionDto: CreatePositionDto): Promise<PositionDto> {
-    const newPosition = this.positionRepository.create(createPositionDto);
+    const newPosition = await this.positionRepository.create(createPositionDto);
     await this.positionRepository.save(newPosition);
     return newPosition.toDto();
   }
@@ -35,8 +35,23 @@ export class PositionsService {
     );
   }
 
-  async update(id: number, updatePositionDto: UpdatePositionDto) {
-    await this.positionRepository.update(id, updatePositionDto);
+  async update(
+    id: number,
+    updatePositionDto: UpdatePositionDto,
+  ): Promise<PositionDto> {
+    if (updatePositionDto.name) {
+      await this.positionRepository.update(id, {
+        name: updatePositionDto.name,
+      });
+    }
+
+    if (updatePositionDto.priority) {
+      await this.positionRepository.update(id, {
+        priority: updatePositionDto.priority,
+      });
+    }
+
+    return this.getById(id);
   }
 
   async remove(id: number) {

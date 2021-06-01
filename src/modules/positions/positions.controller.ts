@@ -29,6 +29,8 @@ import { PositionDto } from './dtos/position.dto';
 export class PositionsController {
   constructor(private readonly positionsService: PositionsService) {}
 
+  // TODO: endpoint for getting positions with public access (using in registration)
+
   @ApiOperation({ summary: 'Create position' })
   @ApiBody({ type: CreatePositionDto })
   @ApiCreatedResponse({
@@ -82,7 +84,7 @@ export class PositionsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePositionDto: UpdatePositionDto,
-  ) {
+  ): Promise<PositionDto> {
     return this.positionsService.update(id, updatePositionDto);
   }
 

@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { FacultyEntity } from '../../faculties/entities/faculty.entity';
-import { PositionEntity } from '../../positions/entities/position.entity';
+import { FacultyDto } from '../../faculties/dtos/faculty.dto';
+import { PositionDto } from '../../positions/dtos/position.dto';
 
-export class UserRegisterDto {
-  @ApiProperty()
+export class RegisterUserDto {
+  @ApiProperty({ minLength: 5, maxLength: 70 })
   @IsString()
   @IsNotEmpty()
   @Length(5, 70)
@@ -14,15 +14,15 @@ export class UserRegisterDto {
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({ minLength: 7, maxLength: 25 })
   @IsString()
   @IsNotEmpty()
   @Length(7, 25)
   password: string;
 
-  @ApiProperty({ type: FacultyEntity })
-  faculty: FacultyEntity;
+  @ApiProperty({ type: FacultyDto })
+  faculty: FacultyDto;
 
-  @ApiProperty({ type: PositionEntity })
-  position: PositionEntity;
+  @ApiProperty({ type: PositionDto })
+  position: PositionDto;
 }

@@ -17,7 +17,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { UserRegisterDto } from './dtos/user-register.dto';
+import { RegisterUserDto } from './dtos/user-register.dto';
 import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
@@ -37,7 +37,7 @@ export class AuthController {
   ) {}
 
   @ApiOperation({ summary: 'Register user' })
-  @ApiBody({ type: UserRegisterDto })
+  @ApiBody({ type: RegisterUserDto })
   @ApiCreatedResponse({
     description: 'The user has been successfully registered.',
     type: [UserEntity],
@@ -47,7 +47,7 @@ export class AuthController {
     description: 'Registration failed',
   })
   @Post('register')
-  register(@Body() registerData: UserRegisterDto): Promise<RegistrationStatus> {
+  register(@Body() registerData: RegisterUserDto): Promise<RegistrationStatus> {
     return this.authService.register(registerData);
   }
 
