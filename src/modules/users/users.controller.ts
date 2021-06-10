@@ -1,12 +1,10 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   ParseIntPipe,
   Patch,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -18,7 +16,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserRole } from '../../common/enums/roles.enum';
-import { Auth } from '../auth/decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { UserDto } from './dtos/user.dto';
 
 @ApiTags('users')

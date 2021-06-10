@@ -21,7 +21,7 @@ import { PositionsService } from './positions.service';
 import { CreatePositionDto } from './dtos/create-position.dto';
 import { UpdatePositionDto } from './dtos/update-position.dto';
 import { UserRole } from '../../common/enums/roles.enum';
-import { Auth } from '../auth/decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { PositionDto } from './dtos/position.dto';
 
 @ApiTags('positions')

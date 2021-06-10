@@ -4,5 +4,5 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreateFacultyDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  readonly name: string;
 }

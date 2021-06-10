@@ -8,21 +8,21 @@ export class RegisterUserDto {
   @IsString()
   @IsNotEmpty()
   @Length(5, 70)
-  username: string;
+  readonly username: string;
 
   @ApiProperty()
   @IsEmail()
-  email: string;
+  readonly email: string;
 
   @ApiProperty({ minLength: 7, maxLength: 25 })
   @IsString()
   @IsNotEmpty()
   @Length(7, 25)
-  password: string;
+  readonly password: string;
 
   @ApiProperty({ type: FacultyDto })
-  faculty: FacultyDto;
+  readonly faculty: FacultyDto;
 
   @ApiProperty({ type: PositionDto })
-  position: PositionDto;
+  readonly position: PositionDto;
 }

@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -11,6 +12,8 @@ import { PositionEntity } from '../../positions/entities/position.entity';
 import { UserRole } from '../../../common/enums/roles.enum';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserDto } from '../dtos/user.dto';
+import { DocumentEntity } from '../../documents/entities/document.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -24,11 +27,13 @@ export class UserEntity extends AbstractEntity<UserDto> {
   email: string;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({
     nullable: true,
   })
+  @Exclude()
   public currentHashedRefreshToken?: string;
 
   @Column({ default: true })
@@ -43,6 +48,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
     eager: true,
   })
   position: PositionEntity;
+
+  @OneToMany(() => DocumentEntity, (document) => document.creator)
+  document: DocumentEntity;
 
   @Column({
     type: 'enum',
