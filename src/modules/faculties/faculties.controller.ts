@@ -21,7 +21,7 @@ import { FacultiesService } from './faculties.service';
 import { CreateFacultyDto } from './dtos/create-faculty.dto';
 import { UpdateFacultyDto } from './dtos/update-faculty.dto';
 import { UserRole } from '../../common/enums/roles.enum';
-import { Auth } from '../auth/decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { FacultyDto } from './dtos/faculty.dto';
 
 @ApiTags('faculties')

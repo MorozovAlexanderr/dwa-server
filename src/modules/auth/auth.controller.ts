@@ -25,7 +25,7 @@ import { UsersService } from '../users/users.service';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
 import { UserEntity } from '../users/entities/user.entity';
 import { UserLoginDto } from './dtos/user-login.dto';
-import { Auth } from './decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { UserRole } from '../../common/enums/roles.enum';
 
 @ApiTags('auth')

@@ -4,9 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CreatePositionDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  readonly name: string;
 
   @ApiProperty()
   @IsNumber()
-  priority: number;
+  readonly priority: number;
 }

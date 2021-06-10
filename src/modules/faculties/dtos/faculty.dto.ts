@@ -4,7 +4,7 @@ import { FacultyEntity } from '../entities/faculty.entity';
 
 export class FacultyDto extends AbstractDto {
   @ApiProperty()
-  name: string;
+  readonly name: string;
 
   constructor(faculty: FacultyEntity) {
     super(faculty);
