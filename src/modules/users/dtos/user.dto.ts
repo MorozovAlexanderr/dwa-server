@@ -15,13 +15,13 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   readonly isActive: boolean;
 
-  @ApiProperty()
+  @ApiProperty({ type: FacultyDto })
   readonly faculty: FacultyDto;
 
-  @ApiProperty()
+  @ApiProperty({ type: PositionDto })
   readonly position: PositionDto;
 
-  @ApiProperty()
+  @ApiProperty({ enum: ['Admin', 'User'] })
   readonly role: UserRole;
 
   constructor(user: UserEntity) {
