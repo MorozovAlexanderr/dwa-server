@@ -6,6 +6,7 @@ import { FacultiesModule } from './modules/faculties/faculties.module';
 import { PositionsModule } from './modules/positions/positions.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
+import { StructuresModule } from './modules/structures/structures.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
     PositionsModule,
     AuthModule,
     DocumentsModule,
+    StructuresModule,
   ],
   controllers: [],
   providers: [],

@@ -16,7 +16,7 @@ export class DocumentDto extends AbstractDto {
   @ApiProperty()
   readonly signerIds: number[];
 
-  @ApiProperty()
+  @ApiProperty({ type: UserDto })
   readonly creator: UserDto;
 
   @ApiProperty()

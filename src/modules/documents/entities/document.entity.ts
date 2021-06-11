@@ -1,20 +1,10 @@
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { DocumentDto } from '../dto/document.dto';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity({ name: 'documents' })
 export class DocumentEntity extends AbstractEntity<DocumentDto> {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column()
   name: string;
 
@@ -37,17 +27,6 @@ export class DocumentEntity extends AbstractEntity<DocumentDto> {
     type: 'timestamp',
   })
   expiresAt: Date;
-
-  @CreateDateColumn({
-    type: 'timestamp',
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    nullable: true,
-  })
-  updatedAt: Date;
 
   dtoClass = DocumentDto;
 }

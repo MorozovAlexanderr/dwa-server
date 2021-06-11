@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { FacultyEntity } from '../../faculties/entities/faculty.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
 import { UserRole } from '../../../common/enums/roles.enum';
@@ -17,9 +9,6 @@ import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
-  @PrimaryGeneratedColumn()
-  id: number;
-
   @Column()
   username: string;
 
@@ -50,7 +39,7 @@ export class UserEntity extends AbstractEntity<UserDto> {
   position: PositionEntity;
 
   @OneToMany(() => DocumentEntity, (document) => document.creator)
-  document: DocumentEntity;
+  document: DocumentEntity[];
 
   @Column({
     type: 'enum',
@@ -58,17 +47,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
     default: UserRole.USER,
   })
   role: UserRole;
-
-  @CreateDateColumn({
-    type: 'timestamp',
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    nullable: true,
-  })
-  updatedAt: Date;
 
   dtoClass = UserDto;
 }
