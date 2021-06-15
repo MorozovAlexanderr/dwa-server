@@ -17,7 +17,7 @@ export class DocumentEntity extends AbstractEntity<DocumentDto> {
   @Column('simple-array')
   signerIds: number[];
 
-  @ManyToOne(() => UserEntity, (creator) => creator.document)
+  @ManyToOne(() => UserEntity, (creator) => creator.documents)
   creator: UserEntity;
 
   @Column({ default: false })
