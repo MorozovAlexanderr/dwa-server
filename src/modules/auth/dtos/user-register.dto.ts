@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { FacultyDto } from '../../faculties/dtos/faculty.dto';
+import { OrganizationDto } from '../../organizations/dtos/organization.dto';
 import { PositionDto } from '../../positions/dtos/position.dto';
+import { StructureDto } from '../../structures/dto/structure.dto';
 
 export class RegisterUserDto {
   @ApiProperty({ minLength: 5, maxLength: 70 })
@@ -20,8 +21,11 @@ export class RegisterUserDto {
   @Length(7, 25)
   readonly password: string;
 
-  @ApiProperty({ type: FacultyDto })
-  readonly faculty: FacultyDto;
+  @ApiProperty({ type: OrganizationDto })
+  readonly organization: OrganizationDto;
+
+  @ApiProperty({ type: StructureDto })
+  readonly structure: StructureDto;
 
   @ApiProperty({ type: PositionDto })
   readonly position: PositionDto;

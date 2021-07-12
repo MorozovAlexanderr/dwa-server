@@ -13,16 +13,18 @@ export class StructuresService {
     private structuresRepository: TreeRepository<StructureEntity>,
   ) {}
 
-  // TODO: move children to other parent
+  // TODO: method for moving children to other parent
 
   async create(createStructureDto: CreateStructureDto): Promise<StructureDto> {
     const newStructure = await this.structuresRepository.create(
       createStructureDto,
     );
+    console.log(newStructure);
     await this.structuresRepository.save(newStructure);
     return newStructure.toDto();
   }
 
+  // Fetch data from relation with other entities isn`t working because it`s related to the findTrees() method
   async getAll(): Promise<StructureDto[]> {
     const structures = await this.structuresRepository.findTrees();
     return structures.map((s) => s.toDto());

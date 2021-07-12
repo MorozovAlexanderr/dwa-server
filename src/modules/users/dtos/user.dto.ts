@@ -3,7 +3,8 @@ import { AbstractDto } from '../../../common/dtos/abstract.dto';
 import { UserRole } from '../../../common/enums/roles.enum';
 import { UserEntity } from '../entities/user.entity';
 import { PositionDto } from '../../positions/dtos/position.dto';
-import { FacultyDto } from '../../faculties/dtos/faculty.dto';
+import { OrganizationDto } from '../../organizations/dtos/organization.dto';
+import { StructureDto } from '../../structures/dto/structure.dto';
 
 export class UserDto extends AbstractDto {
   @ApiProperty()
@@ -15,8 +16,11 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   readonly isActive: boolean;
 
-  @ApiProperty({ type: FacultyDto })
-  readonly faculty: FacultyDto;
+  @ApiProperty({ type: OrganizationDto })
+  readonly organization: OrganizationDto;
+
+  @ApiProperty({ type: StructureDto })
+  readonly structure: StructureDto;
 
   @ApiProperty({ type: PositionDto })
   readonly position: PositionDto;
@@ -29,8 +33,9 @@ export class UserDto extends AbstractDto {
     this.username = user.username;
     this.email = user.email;
     this.isActive = user.isActive;
-    this.faculty = user.faculty.toDto();
-    this.position = user.position.toDto();
+    this.organization = user.organization?.toDto();
+    this.structure = user.structure?.toDto();
+    this.position = user.position?.toDto();
     this.role = user.role;
   }
 }
