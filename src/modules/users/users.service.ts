@@ -14,9 +14,10 @@ export class UsersService {
     private usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
-    const newUser = await this.usersRepository.create(registerUserDto);
-    return this.usersRepository.save(newUser);
+  async create(registerUserDto: RegisterUserDto): Promise<UserDto> {
+    const newUser = this.usersRepository.create(registerUserDto);
+    await this.usersRepository.save(newUser);
+    return newUser.toDto();
   }
 
   async findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {

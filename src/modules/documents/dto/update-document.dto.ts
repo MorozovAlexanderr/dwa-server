@@ -11,23 +11,23 @@ export class UpdateDocumentDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  readonly name: string;
+  readonly name?: string;
 
   @ApiPropertyOptional()
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  readonly headers: string;
+  readonly headers?: string;
 
   @ApiPropertyOptional()
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  readonly description: string;
+  readonly description?: string;
 
   @ApiPropertyOptional()
   @IsDateString()
   @IsNotEmpty()
   @IsOptional()
-  readonly expiresAt: Date;
+  readonly expiresAt?: Date;
 }

@@ -18,15 +18,15 @@ import {
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dtos/user-register.dto';
-import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
 import { UsersService } from '../users/users.service';
 import JwtRefreshGuard from './guards/jwt-refresh.guard';
-import { UserEntity } from '../users/entities/user.entity';
 import { UserLoginDto } from './dtos/user-login.dto';
 import { Auth } from '../../decorators/auth.decorator';
 import { UserRole } from '../../common/enums/roles.enum';
+import { LoginPayloadDto } from './dtos/login-payload.dto';
+import { UserDto } from '../users/dtos/user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -40,14 +40,14 @@ export class AuthController {
   @ApiBody({ type: RegisterUserDto })
   @ApiCreatedResponse({
     description: 'The user has been successfully registered.',
-    type: [UserEntity],
+    type: [UserDto],
   })
   @ApiResponse({
     status: 404,
     description: 'Registration failed',
   })
   @Post('register')
-  register(@Body() registerData: RegisterUserDto): Promise<RegistrationStatus> {
+  async register(@Body() registerData: RegisterUserDto): Promise<UserDto> {
     return this.authService.register(registerData);
   }
 
@@ -57,20 +57,29 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Returns access and refresh auth tokens',
+    type: LoginPayloadDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorised',
   })
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() request: RequestWithUser) {
+  async login(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
     const { user } = request;
-    const accessToken = this.authService.getJwtAccessToken(user.id);
-    const refreshToken = this.authService.getJwtRefreshToken(user.id);
+    const tokens = this.authService.generateTokens(user.id);
 
-    await this.usersService.setCurrentRefreshToken(refreshToken, user.id);
+    const cookie = this.authService.getCookieWithJwtRefreshToken(
+      tokens.refreshToken,
+    );
 
-    return { accessToken, refreshToken };
+    await this.usersService.setCurrentRefreshToken(
+      tokens.refreshToken,
+      user.id,
+    );
+
+    request.res.setHeader('Set-Cookie', [cookie]);
+
+    return { ...tokens };
   }
 
   @ApiOperation({ summary: 'Refresh user auth token' })
@@ -78,15 +87,28 @@ export class AuthController {
   @ApiResponse({
     description: 'Returns new access auth token',
     status: 200,
+    type: LoginPayloadDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorised',
   })
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
-  refresh(@Req() request: RequestWithUser) {
-    const accessToken = this.authService.getJwtAccessToken(request.user.id);
-    return { accessToken };
+  async refresh(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
+    const tokens = this.authService.generateTokens(request.user.id);
+
+    const cookie = this.authService.getCookieWithJwtRefreshToken(
+      tokens.refreshToken,
+    );
+
+    await this.usersService.setCurrentRefreshToken(
+      tokens.refreshToken,
+      request.user.id,
+    );
+
+    request.res.setHeader('Set-Cookie', [cookie]);
+
+    return { ...tokens };
   }
 
   @ApiOperation({ summary: 'Logout user' })
@@ -102,5 +124,6 @@ export class AuthController {
   @Post('logout')
   async logOut(@Req() request: RequestWithUser) {
     await this.usersService.removeRefreshToken(request.user.id);
+    request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
   }
 }

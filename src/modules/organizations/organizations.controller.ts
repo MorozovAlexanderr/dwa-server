@@ -31,7 +31,7 @@ export class OrganizationsController {
 
   // TODO: endpoint for getting organizations with public access (using in registration)
 
-  @ApiOperation({ summary: 'Create faculty' })
+  @ApiOperation({ summary: 'Create organizations' })
   @ApiBody({ type: CreateOrganizationDto })
   @ApiCreatedResponse({
     description: 'The organization has been successfully created.',

@@ -18,7 +18,7 @@ export class DocumentsService {
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentDto> {
-    const newDocument = await this.documentsRepository.create({
+    const newDocument = this.documentsRepository.create({
       creator: user,
       ...createDocumentDto,
     });
