@@ -79,7 +79,7 @@ export class AuthController {
 
     request.res.setHeader('Set-Cookie', [cookie]);
 
-    return { ...tokens };
+    return { ...tokens, user };
   }
 
   @ApiOperation({ summary: 'Refresh user auth token' })
@@ -95,7 +95,8 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
   async refresh(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
-    const tokens = this.authService.generateTokens(request.user.id);
+    const { user } = request;
+    const tokens = this.authService.generateTokens(user.id);
 
     const cookie = this.authService.getCookieWithJwtRefreshToken(
       tokens.refreshToken,
@@ -103,12 +104,12 @@ export class AuthController {
 
     await this.usersService.setCurrentRefreshToken(
       tokens.refreshToken,
-      request.user.id,
+      user.id,
     );
 
     request.res.setHeader('Set-Cookie', [cookie]);
 
-    return { ...tokens };
+    return { ...tokens, user };
   }
 
   @ApiOperation({ summary: 'Logout user' })
