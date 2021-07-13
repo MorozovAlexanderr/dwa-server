@@ -31,6 +31,7 @@ import { UserEntity } from '../users/entities/user.entity';
 @ApiTags('documents')
 @ApiBearerAuth()
 @Auth(UserRole.ADMIN, UserRole.USER)
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
@@ -41,7 +42,6 @@ export class DocumentsController {
     description: 'The document has been successfully created.',
     type: DocumentDto,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
   create(
     @Body() createDocumentDto: CreateDocumentDto,

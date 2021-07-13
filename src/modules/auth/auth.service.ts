@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { RegisterUserDto } from './dtos/user-register.dto';
-import { RegistrationStatus } from './interfaces/registration-status.interface';
 import { TokenPayload } from './interfaces/token-payload.interface';
+import { UserDto } from '../users/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,24 +26,22 @@ export class AuthService {
     return null;
   }
 
-  async register(user: RegisterUserDto): Promise<RegistrationStatus> {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    let status: RegistrationStatus = {
-      success: true,
-      message: 'User registered',
-    };
-    try {
-      await this.usersService.create({
-        ...user,
-        password: hashedPassword,
-      });
-    } catch (err) {
-      status = {
-        success: false,
-        message: err.message,
-      };
+  async register(user: RegisterUserDto): Promise<UserDto> {
+    const candidate = await this.usersService.findOne({ email: user.email });
+    if (candidate) {
+      throw new HttpException(
+        'User with this email already exists',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return status;
+
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    const registeredUser = await this.usersService.create({
+      ...user,
+      password: hashedPassword,
+    });
+
+    return registeredUser;
   }
 
   getJwtAccessToken(userId: number) {
@@ -64,5 +62,24 @@ export class AuthService {
         'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
       )}`,
     });
+  }
+
+  getCookieWithJwtRefreshToken(token: string) {
+    return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+    )}`;
+  }
+
+  generateTokens(userId: number) {
+    const accessToken = this.getJwtAccessToken(userId);
+    const refreshToken = this.getJwtRefreshToken(userId);
+    return { accessToken, refreshToken };
+  }
+
+  public getCookiesForLogOut() {
+    return [
+      'Authentication=; HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
   }
 }
