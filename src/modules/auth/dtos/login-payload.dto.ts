@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../../users/entities/user.entity';
+import { UserDto } from '../../users/dtos/user.dto';
 
 export class LoginPayloadDto {
   @ApiProperty()
@@ -9,5 +9,5 @@ export class LoginPayloadDto {
   readonly refreshToken: string;
 
   @ApiProperty()
-  readonly user: UserEntity;
+  readonly user: UserDto;
 }
