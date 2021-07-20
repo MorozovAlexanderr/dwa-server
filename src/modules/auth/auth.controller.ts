@@ -79,7 +79,7 @@ export class AuthController {
 
     request.res.setHeader('Set-Cookie', [cookie]);
 
-    return { ...tokens, user };
+    return { ...tokens, user: user.toDto() };
   }
 
   @ApiOperation({ summary: 'Refresh user auth token' })
@@ -109,7 +109,7 @@ export class AuthController {
 
     request.res.setHeader('Set-Cookie', [cookie]);
 
-    return { ...tokens, user };
+    return { ...tokens, user: user.toDto() };
   }
 
   @ApiOperation({ summary: 'Logout user' })
