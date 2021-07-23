@@ -1,5 +1,5 @@
 import { AbstractDto } from '../../../common/dtos/abstract.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { StructureEntity } from '../entities/structure.entity';
 import { OrganizationDto } from '../../organizations/dtos/organization.dto';
 
@@ -7,8 +7,8 @@ export class StructureDto extends AbstractDto {
   @ApiProperty()
   readonly name: string;
 
-  @ApiProperty({ type: OrganizationDto })
-  readonly organization: OrganizationDto;
+  @ApiPropertyOptional({ type: OrganizationDto })
+  readonly organization?: OrganizationDto;
 
   @ApiProperty({ type: StructureDto })
   readonly children: StructureDto[];
@@ -18,6 +18,6 @@ export class StructureDto extends AbstractDto {
     this.name = structure.name;
     // Organisation can be skipped due to tree inference methods
     this.organization = structure.organization?.toDto();
-    this.children = structure.children;
+    this.children = structure.children.map((c) => c.toDto());
   }
 }

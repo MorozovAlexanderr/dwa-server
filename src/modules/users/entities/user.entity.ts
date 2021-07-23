@@ -1,12 +1,10 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { OrganizationEntity } from '../../organizations/entities/organization.entity';
-import { PositionEntity } from '../../positions/entities/position.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { UserRole } from '../../../common/enums/roles.enum';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserDto } from '../dtos/user.dto';
 import { DocumentEntity } from '../../documents/entities/document.entity';
 import { Exclude } from 'class-transformer';
-import { StructureEntity } from '../../structures/entities/structure.entity';
+import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -29,20 +27,8 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToOne(() => OrganizationEntity, (organization) => organization.users, {
-    eager: true,
-  })
-  organization: OrganizationEntity;
-
-  @ManyToOne(() => StructureEntity, (structure) => structure.users, {
-    eager: true,
-  })
-  structure: StructureEntity;
-
-  @ManyToOne(() => PositionEntity, (position) => position.users, {
-    eager: true,
-  })
-  position: PositionEntity;
+  @OneToMany(() => WorkspaceEntity, (workspace) => workspace.user)
+  workspaces: WorkspaceEntity[];
 
   @OneToMany(() => DocumentEntity, (document) => document.creator)
   documents: DocumentEntity[];

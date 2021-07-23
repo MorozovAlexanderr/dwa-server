@@ -25,7 +25,7 @@ export class UsersService {
   }
 
   async getUser(id: number): Promise<UserDto> {
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne({ id });
     if (user) {
       return user.toDto();
     }

@@ -7,6 +7,7 @@ import { PositionsModule } from './modules/positions/positions.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { StructuresModule } from './modules/structures/structures.module';
+import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StructuresModule } from './modules/structures/structures.module';
     AuthModule,
     DocumentsModule,
     StructuresModule,
+    WorkspacesModule,
   ],
   controllers: [],
   providers: [],
