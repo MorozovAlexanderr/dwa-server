@@ -5,7 +5,10 @@ import { UserEntity } from '../entities/user.entity';
 
 export class UserDto extends AbstractDto {
   @ApiProperty()
-  readonly username: string;
+  readonly firstName: string;
+
+  @ApiProperty()
+  readonly secondName: string;
 
   @ApiProperty()
   readonly email: string;
@@ -18,7 +21,8 @@ export class UserDto extends AbstractDto {
 
   constructor(user: UserEntity) {
     super(user);
-    this.username = user.username;
+    this.firstName = user.firstName;
+    this.secondName = user.secondName;
     this.email = user.email;
     this.isActive = user.isActive;
     this.role = user.role;

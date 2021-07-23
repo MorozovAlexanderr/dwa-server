@@ -9,7 +9,10 @@ import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
   @Column()
-  username: string;
+  firstName: string;
+
+  @Column()
+  secondName: string;
 
   @Column({ unique: true })
   email: string;
