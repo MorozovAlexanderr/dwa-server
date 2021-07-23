@@ -5,11 +5,17 @@ import { PositionDto } from '../../positions/dtos/position.dto';
 import { StructureDto } from '../../structures/dto/structure.dto';
 
 export class RegisterUserDto {
-  @ApiProperty({ minLength: 5, maxLength: 70 })
+  @ApiProperty({ minLength: 2, maxLength: 70 })
   @IsString()
   @IsNotEmpty()
-  @Length(5, 70)
-  readonly username: string;
+  @Length(2, 70)
+  readonly firstName: string;
+
+  @ApiProperty({ minLength: 2, maxLength: 70 })
+  @IsString()
+  @IsNotEmpty()
+  @Length(2, 70)
+  readonly secondName: string;
 
   @ApiProperty()
   @IsEmail()
@@ -20,13 +26,4 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @Length(7, 25)
   readonly password: string;
-
-  @ApiProperty({ type: OrganizationDto })
-  readonly organization: OrganizationDto;
-
-  @ApiProperty({ type: StructureDto })
-  readonly structure: StructureDto;
-
-  @ApiProperty({ type: PositionDto })
-  readonly position: PositionDto;
 }

@@ -8,11 +8,17 @@ import {
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-  @ApiPropertyOptional({ minLength: 5, maxLength: 70 })
+  @ApiPropertyOptional({ minLength: 2, maxLength: 70 })
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  readonly username?: string;
+  readonly firstName?: string;
+
+  @ApiPropertyOptional({ minLength: 2, maxLength: 70 })
+  @IsString()
+  @IsNotEmpty()
+  @IsOptional()
+  readonly secondName?: string;
 
   @ApiPropertyOptional()
   @IsString()

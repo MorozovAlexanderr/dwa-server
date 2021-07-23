@@ -25,7 +25,7 @@ export class UsersService {
   }
 
   async getUser(id: number): Promise<UserDto> {
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne({ id });
     if (user) {
       return user.toDto();
     }
@@ -36,9 +36,15 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDto> {
-    if (updateUserDto.username) {
+    if (updateUserDto.firstName) {
       await this.usersRepository.update(id, {
-        username: updateUserDto.username,
+        firstName: updateUserDto.firstName,
+      });
+    }
+
+    if (updateUserDto.secondName) {
+      await this.usersRepository.update(id, {
+        secondName: updateUserDto.secondName,
       });
     }
 
