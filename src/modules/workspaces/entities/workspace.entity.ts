@@ -18,11 +18,11 @@ export class WorkspaceEntity extends AbstractEntity<WorkspaceDto> {
   )
   organization: OrganizationEntity;
 
-  @ManyToOne(() => StructureEntity, (structure) => structure.workspaces)
-  structure: StructureEntity;
-
-  @ManyToOne(() => PositionEntity, (position) => position.workspaces)
-  position: PositionEntity;
+  // @ManyToOne(() => StructureEntity, (structure) => structure.workspaces)
+  // structure: StructureEntity;
+  //
+  // @ManyToOne(() => PositionEntity, (position) => position.workspaces)
+  // position: PositionEntity;
 
   @Column({ default: false })
   isCurrent: boolean;

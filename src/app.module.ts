@@ -9,16 +9,18 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { StructuresModule } from './modules/structures/structures.module';
 import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 
+// NOTE: Positions and Structures modules are temporarily disabled
+
 @Module({
   imports: [
     configModule,
     TypeOrmModule.forRoot(),
     UsersModule,
     OrganizationsModule,
-    PositionsModule,
+    // PositionsModule,
+    // StructuresModule,
     AuthModule,
     DocumentsModule,
-    StructuresModule,
     WorkspacesModule,
   ],
   controllers: [],

@@ -36,7 +36,7 @@ export class WorkspacesService {
 
   async getById(id: number, user: UserEntity): Promise<WorkspaceDto> {
     const workspace = await this.workspacesRepository.findOne({
-      relations: ['organization', 'structure', 'position'],
+      relations: ['organization'],
       where: { id, user },
     });
     if (workspace) {
