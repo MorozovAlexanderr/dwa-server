@@ -8,5 +8,6 @@ import { WorkspaceEntity } from './entities/workspace.entity';
   imports: [TypeOrmModule.forFeature([WorkspaceEntity])],
   controllers: [WorkspacesController],
   providers: [WorkspacesService],
+  exports: [WorkspacesService],
 })
 export class WorkspacesModule {}
