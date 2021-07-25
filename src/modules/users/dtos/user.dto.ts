@@ -16,7 +16,7 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   readonly isActive: boolean;
 
-  @ApiProperty({ enum: ['Admin', 'User'] })
+  @ApiProperty({ enum: UserRole })
   readonly role: UserRole;
 
   constructor(user: UserEntity) {

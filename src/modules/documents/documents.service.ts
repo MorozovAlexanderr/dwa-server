@@ -6,20 +6,24 @@ import { DocumentEntity } from './entities/document.entity';
 import { Repository } from 'typeorm';
 import { DocumentDto } from './dto/document.dto';
 import { UserEntity } from '../users/entities/user.entity';
+import { WorkspacesService } from '../workspaces/workspaces.service';
 
 @Injectable()
 export class DocumentsService {
   constructor(
     @InjectRepository(DocumentEntity)
     private documentsRepository: Repository<DocumentEntity>,
+    private workspacesService: WorkspacesService,
   ) {}
 
   async create(
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentDto> {
+    const { organization } = await this.workspacesService.getCurrent(user);
     const newDocument = this.documentsRepository.create({
       creator: user,
+      organization,
       ...createDocumentDto,
     });
     await this.documentsRepository.save(newDocument);
@@ -27,14 +31,20 @@ export class DocumentsService {
   }
 
   async getAll(user: UserEntity): Promise<DocumentDto[]> {
-    const documents = await this.documentsRepository.find({ creator: user });
+    const { organization } = await this.workspacesService.getCurrent(user);
+    const documents = await this.documentsRepository.find({
+      creator: user,
+      organization,
+    });
     return documents.map((d) => d.toDto());
   }
 
   async getById(id: number, user: UserEntity): Promise<DocumentDto> {
+    const { organization } = await this.workspacesService.getCurrent(user);
     const document = await this.documentsRepository.findOne({
       id,
       creator: user,
+      organization,
     });
     if (document) {
       return document.toDto();

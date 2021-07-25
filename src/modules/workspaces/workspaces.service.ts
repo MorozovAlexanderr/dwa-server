@@ -14,8 +14,16 @@ export class WorkspacesService {
     private workspacesRepository: Repository<WorkspaceEntity>,
   ) {}
 
-  create(createWorkspaceDto: CreateWorkspaceDto) {
-    return 'This action adds a new workspace';
+  async create(
+    createWorkspaceDto: CreateWorkspaceDto,
+    user: UserEntity,
+  ): Promise<WorkspaceDto> {
+    const newWorkspace = await this.workspacesRepository.create({
+      user,
+      ...createWorkspaceDto,
+    });
+    await this.workspacesRepository.save(newWorkspace);
+    return newWorkspace.toDto();
   }
 
   async getAll(user: UserEntity): Promise<WorkspaceDto[]> {
@@ -40,11 +48,28 @@ export class WorkspacesService {
     );
   }
 
-  update(id: number, updateWorkspaceDto: UpdateWorkspaceDto) {
-    return `This action updates a #${id} workspace`;
+  async getCurrent(user: UserEntity): Promise<WorkspaceDto> {
+    const workspace = await this.workspacesRepository.findOne({
+      relations: ['organization'],
+      where: { user, isCurrent: true },
+    });
+    return workspace.toDto();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} workspace`;
+  async switch(id: number, user): Promise<WorkspaceDto> {
+    const currentWorkspace = await this.getCurrent(user);
+
+    await this.workspacesRepository.update(currentWorkspace.id, {
+      isCurrent: false,
+    });
+    await this.workspacesRepository.update(id, {
+      isCurrent: true,
+    });
+
+    return this.getById(id, user);
+  }
+
+  async remove(id: number) {
+    await this.workspacesRepository.delete(id);
   }
 }
