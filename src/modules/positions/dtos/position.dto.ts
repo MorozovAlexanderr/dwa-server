@@ -16,7 +16,7 @@ export class PositionDto extends AbstractDto {
   constructor(position: PositionEntity) {
     super(position);
     this.name = position.name;
-    this.organization = position.organization.toDto();
+    // this.organization = position.organization.toDto();
     this.priority = position.priority;
   }
 }

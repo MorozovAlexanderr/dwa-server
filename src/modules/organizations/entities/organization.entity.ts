@@ -14,11 +14,11 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
   @OneToMany(() => DocumentEntity, (document) => document.organization)
   documents: DocumentEntity[];
 
-  @OneToMany(() => StructureEntity, (structure) => structure.organization)
-  structures: StructureEntity[];
-
-  @OneToMany(() => PositionEntity, (position) => position.organization)
-  positions: PositionEntity[];
+  // @OneToMany(() => StructureEntity, (structure) => structure.organization)
+  // structures: StructureEntity[];
+  //
+  // @OneToMany(() => PositionEntity, (position) => position.organization)
+  // positions: PositionEntity[];
 
   @OneToMany(() => WorkspaceEntity, (workspace) => workspace.organization)
   workspaces: WorkspaceEntity[];

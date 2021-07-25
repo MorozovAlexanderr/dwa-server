@@ -12,8 +12,8 @@ import {
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
 import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
 
-@Entity('structures')
-@Tree('closure-table')
+// @Entity('structures')
+// @Tree('closure-table')
 export class StructureEntity extends AbstractEntity<StructureDto> {
   @Column()
   name: string;
@@ -24,14 +24,14 @@ export class StructureEntity extends AbstractEntity<StructureDto> {
   @TreeChildren()
   children: StructureEntity[];
 
-  @ManyToOne(
-    () => OrganizationEntity,
-    (organization) => organization.structures,
-  )
-  organization: OrganizationEntity;
-
-  @OneToMany(() => WorkspaceEntity, (workspace) => workspace.structure)
-  workspaces: WorkspaceEntity[];
+  // @ManyToOne(
+  //   () => OrganizationEntity,
+  //   (organization) => organization.structures,
+  // )
+  // organization: OrganizationEntity;
+  //
+  // @OneToMany(() => WorkspaceEntity, (workspace) => workspace.structure)
+  // workspaces: WorkspaceEntity[];
 
   dtoClass = StructureDto;
 }

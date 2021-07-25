@@ -17,7 +17,7 @@ export class StructureDto extends AbstractDto {
     super(structure);
     this.name = structure.name;
     // Organisation can be skipped due to tree inference methods
-    this.organization = structure.organization?.toDto();
+    // this.organization = structure.organization?.toDto();
     this.children = structure.children.map((c) => c.toDto());
   }
 }

@@ -4,7 +4,7 @@ import { PositionDto } from '../dtos/position.dto';
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
 import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
 
-@Entity({ name: 'positions' })
+// @Entity({ name: 'positions' })
 export class PositionEntity extends AbstractEntity<PositionDto> {
   @Column()
   name: string;
@@ -12,11 +12,11 @@ export class PositionEntity extends AbstractEntity<PositionDto> {
   @Column()
   priority: number;
 
-  @ManyToOne(() => OrganizationEntity, (organization) => organization.positions)
-  organization: OrganizationEntity;
-
-  @OneToMany(() => WorkspaceEntity, (workspace) => workspace.position)
-  workspaces: WorkspaceEntity[];
+  // @ManyToOne(() => OrganizationEntity, (organization) => organization.positions)
+  // organization: OrganizationEntity;
+  //
+  // @OneToMany(() => WorkspaceEntity, (workspace) => workspace.position)
+  // workspaces: WorkspaceEntity[];
 
   dtoClass = PositionDto;
 }
