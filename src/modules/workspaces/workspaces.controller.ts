@@ -35,7 +35,7 @@ export class WorkspacesController {
   @ApiOperation({ summary: 'Create workspace' })
   @ApiBody({ type: CreateWorkspaceDto })
   @ApiCreatedResponse({
-    description: 'The workspace has been successfully created.',
+    description: 'Successfully created',
     type: WorkspaceDto,
   })
   @Post()

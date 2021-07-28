@@ -11,21 +11,21 @@ import { RegisterUserDto } from '../auth/dtos/user-register.dto';
 export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>,
+    private readonly _usersRepository: Repository<UserEntity>,
   ) {}
 
   async create(registerUserDto: RegisterUserDto): Promise<UserDto> {
-    const newUser = this.usersRepository.create(registerUserDto);
-    await this.usersRepository.save(newUser);
+    const newUser = this._usersRepository.create(registerUserDto);
+    await this._usersRepository.save(newUser);
     return newUser.toDto();
   }
 
   async findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {
-    return this.usersRepository.findOne(findData);
+    return this._usersRepository.findOne(findData);
   }
 
-  async getUser(id: number): Promise<UserDto> {
-    const user = await this.usersRepository.findOne({ id });
+  async getById(id: number): Promise<UserDto | undefined> {
+    const user = await this._usersRepository.findOne({ id });
     if (user) {
       return user.toDto();
     }
@@ -37,19 +37,19 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDto> {
     if (updateUserDto.firstName) {
-      await this.usersRepository.update(id, {
+      await this._usersRepository.update(id, {
         firstName: updateUserDto.firstName,
       });
     }
 
     if (updateUserDto.secondName) {
-      await this.usersRepository.update(id, {
+      await this._usersRepository.update(id, {
         secondName: updateUserDto.secondName,
       });
     }
 
     if (updateUserDto.email) {
-      await this.usersRepository.update(id, {
+      await this._usersRepository.update(id, {
         email: updateUserDto.email,
       });
     }
@@ -58,7 +58,7 @@ export class UsersService {
       await this.updatePassword(id, updateUserDto.password);
     }
 
-    return this.getUser(id);
+    return this.getById(id);
   }
 
   async updatePassword(
@@ -66,7 +66,7 @@ export class UsersService {
     password: string,
   ): Promise<UpdateResult> {
     const hashedPassword = await bcrypt.hash(password, 10);
-    return await this.usersRepository.update(userId, {
+    return await this._usersRepository.update(userId, {
       password: hashedPassword,
     });
   }
@@ -76,7 +76,7 @@ export class UsersService {
     userId: number,
   ): Promise<void> {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.usersRepository.update(userId, { currentHashedRefreshToken });
+    await this._usersRepository.update(userId, { currentHashedRefreshToken });
   }
 
   async getUserIfRefreshTokenMatches(
@@ -96,7 +96,7 @@ export class UsersService {
   }
 
   async removeRefreshToken(userId: number): Promise<UpdateResult> {
-    return this.usersRepository.update(userId, {
+    return this._usersRepository.update(userId, {
       currentHashedRefreshToken: null,
     });
   }

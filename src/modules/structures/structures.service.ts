@@ -10,28 +10,28 @@ import { StructureDto } from './dto/structure.dto';
 export class StructuresService {
   constructor(
     @InjectRepository(StructureEntity)
-    private structuresRepository: TreeRepository<StructureEntity>,
+    private readonly _structuresRepository: TreeRepository<StructureEntity>,
   ) {}
 
   // TODO: method for moving children to other parent
 
   async create(createStructureDto: CreateStructureDto): Promise<StructureDto> {
-    const newStructure = await this.structuresRepository.create(
+    const newStructure = await this._structuresRepository.create(
       createStructureDto,
     );
     console.log(newStructure);
-    await this.structuresRepository.save(newStructure);
+    await this._structuresRepository.save(newStructure);
     return newStructure.toDto();
   }
 
   // Fetch data from relation with other entities isn`t working because it`s related to the findTrees() method
   async getAll(): Promise<StructureDto[]> {
-    const structures = await this.structuresRepository.findTrees();
+    const structures = await this._structuresRepository.findTrees();
     return structures.map((s) => s.toDto());
   }
 
-  async getById(id: number): Promise<StructureDto> {
-    const structure = await this.structuresRepository.findOne(id);
+  async getById(id: number): Promise<StructureDto | undefined> {
+    const structure = await this._structuresRepository.findOne(id);
     if (structure) {
       return structure.toDto();
     }
@@ -46,7 +46,7 @@ export class StructuresService {
     updateStructureDto: UpdateStructureDto,
   ): Promise<StructureDto> {
     if (updateStructureDto.name) {
-      await this.structuresRepository.update(id, {
+      await this._structuresRepository.update(id, {
         name: updateStructureDto.name,
       });
     }
@@ -55,7 +55,7 @@ export class StructuresService {
   }
 
   async remove(id: number): Promise<StructureDto> {
-    const structureToDelete = await this.structuresRepository.findOne(id);
-    return (await this.structuresRepository.remove(structureToDelete)).toDto();
+    const structureToDelete = await this._structuresRepository.findOne(id);
+    return (await this._structuresRepository.remove(structureToDelete)).toDto();
   }
 }

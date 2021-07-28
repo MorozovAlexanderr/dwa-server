@@ -5,25 +5,25 @@ export class CreateDocumentDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  readonly name: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  headers: string;
+  readonly headers: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  description: string;
+  readonly description: string;
 
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
-  signerIds: number[];
+  readonly signerIds: number[];
 
   @ApiProperty()
   @IsDateString()
   @IsNotEmpty()
-  expiresAt: Date;
+  readonly expiresAt: Date;
 }

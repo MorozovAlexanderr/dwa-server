@@ -34,20 +34,20 @@ import { UserEntity } from '../users/entities/user.entity';
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('documents')
 export class DocumentsController {
-  constructor(private readonly documentsService: DocumentsService) {}
+  constructor(private readonly _documentsService: DocumentsService) {}
 
   @ApiOperation({ summary: 'Create document' })
   @ApiBody({ type: CreateDocumentDto })
   @ApiCreatedResponse({
-    description: 'The document has been successfully created.',
+    description: 'Successfully created',
     type: DocumentDto,
   })
   @Post()
   create(
     @Body() createDocumentDto: CreateDocumentDto,
     @AuthUser() user: UserEntity,
-  ) {
-    return this.documentsService.create(createDocumentDto, user);
+  ): Promise<DocumentDto> {
+    return this._documentsService.create(createDocumentDto, user);
   }
 
   @ApiOperation({ summary: 'Get all documents' })
@@ -56,8 +56,8 @@ export class DocumentsController {
     type: [DocumentDto],
   })
   @Get()
-  getAll(@AuthUser() user: UserEntity) {
-    return this.documentsService.getAll(user);
+  getAll(@AuthUser() user: UserEntity): Promise<DocumentDto[]> {
+    return this._documentsService.getAll(user);
   }
 
   @ApiOperation({ summary: 'Get document by id' })
@@ -69,8 +69,11 @@ export class DocumentsController {
     description: 'Document not found',
   })
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number, @AuthUser() user: UserEntity) {
-    return this.documentsService.getById(id, user);
+  getOne(
+    @Param('id', ParseIntPipe) id: number,
+    @AuthUser() user: UserEntity,
+  ): Promise<DocumentDto> {
+    return this._documentsService.getById(id, user);
   }
 
   @ApiOperation({ summary: 'Update document by id' })
@@ -86,8 +89,8 @@ export class DocumentsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDocumentDto: UpdateDocumentDto,
     @AuthUser() user: UserEntity,
-  ) {
-    return this.documentsService.update(id, updateDocumentDto, user);
+  ): Promise<DocumentDto> {
+    return this._documentsService.update(id, updateDocumentDto, user);
   }
 
   @ApiOperation({ summary: 'Delete document by id' })
@@ -99,6 +102,6 @@ export class DocumentsController {
   })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.documentsService.remove(+id);
+    return this._documentsService.remove(+id);
   }
 }

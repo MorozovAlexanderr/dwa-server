@@ -10,22 +10,24 @@ import { PositionDto } from './dtos/position.dto';
 export class PositionsService {
   constructor(
     @InjectRepository(PositionEntity)
-    private positionRepository: Repository<PositionEntity>,
+    private readonly _positionRepository: Repository<PositionEntity>,
   ) {}
 
   async create(createPositionDto: CreatePositionDto): Promise<PositionDto> {
-    const newPosition = await this.positionRepository.create(createPositionDto);
-    await this.positionRepository.save(newPosition);
+    const newPosition = await this._positionRepository.create(
+      createPositionDto,
+    );
+    await this._positionRepository.save(newPosition);
     return newPosition.toDto();
   }
 
   async getAll(): Promise<PositionDto[]> {
-    const positions = await this.positionRepository.find();
+    const positions = await this._positionRepository.find();
     return positions.map((p) => p.toDto());
   }
 
-  async getById(id: number): Promise<PositionDto> {
-    const position = await this.positionRepository.findOne(id);
+  async getById(id: number): Promise<PositionDto | undefined> {
+    const position = await this._positionRepository.findOne(id);
     if (position) {
       return position.toDto();
     }
@@ -40,13 +42,13 @@ export class PositionsService {
     updatePositionDto: UpdatePositionDto,
   ): Promise<PositionDto> {
     if (updatePositionDto.name) {
-      await this.positionRepository.update(id, {
+      await this._positionRepository.update(id, {
         name: updatePositionDto.name,
       });
     }
 
     if (updatePositionDto.priority) {
-      await this.positionRepository.update(id, {
+      await this._positionRepository.update(id, {
         priority: updatePositionDto.priority,
       });
     }
@@ -55,6 +57,6 @@ export class PositionsService {
   }
 
   async remove(id: number) {
-    await this.positionRepository.delete(id);
+    await this._positionRepository.delete(id);
   }
 }

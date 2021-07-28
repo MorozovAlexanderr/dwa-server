@@ -6,17 +6,18 @@ import { UsersService } from '../users/users.service';
 import { RegisterUserDto } from './dtos/user-register.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
 import { UserDto } from '../users/dtos/user.dto';
+import { UtilsService } from '../../utils/utils.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly _usersService: UsersService,
+    private readonly _jwtService: JwtService,
+    private readonly _configService: ConfigService,
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findOne({ email });
+    const user = await this._usersService.findOne({ email });
     const isMatchPass = user
       ? await bcrypt.compare(password, user.password)
       : false;
@@ -27,7 +28,7 @@ export class AuthService {
   }
 
   async register(user: RegisterUserDto): Promise<UserDto> {
-    const candidate = await this.usersService.findOne({ email: user.email });
+    const candidate = await this._usersService.findOne({ email: user.email });
     if (candidate) {
       throw new HttpException(
         'User with this email already exists',
@@ -35,8 +36,8 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    const registeredUser = await this.usersService.create({
+    const hashedPassword = UtilsService.generateHash(user.password);
+    const registeredUser = await this._usersService.create({
       ...user,
       password: hashedPassword,
     });
@@ -46,9 +47,9 @@ export class AuthService {
 
   getJwtAccessToken(userId: number) {
     const payload: TokenPayload = { userId };
-    return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get(
+    return this._jwtService.sign(payload, {
+      secret: this._configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${this._configService.get(
         'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
       )}`,
     });
@@ -56,16 +57,16 @@ export class AuthService {
 
   getJwtRefreshToken(userId: number) {
     const payload: TokenPayload = { userId };
-    return this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get(
+    return this._jwtService.sign(payload, {
+      secret: this._configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: `${this._configService.get(
         'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
       )}`,
     });
   }
 
   getCookieWithJwtRefreshToken(token: string) {
-    return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+    return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get(
       'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
     )}`;
   }
