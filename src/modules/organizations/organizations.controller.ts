@@ -27,14 +27,12 @@ import { OrganizationDto } from './dtos/organization.dto';
 @ApiTags('organizations')
 @Controller('organizations')
 export class OrganizationsController {
-  constructor(private readonly organizationsService: OrganizationsService) {}
-
-  // TODO: endpoint for getting organizations with public access (using in registration)
+  constructor(private readonly _organizationsService: OrganizationsService) {}
 
   @ApiOperation({ summary: 'Create organizations' })
   @ApiBody({ type: CreateOrganizationDto })
   @ApiCreatedResponse({
-    description: 'The organization has been successfully created.',
+    description: 'Successfully created',
     type: OrganizationDto,
   })
   @ApiBearerAuth()
@@ -43,7 +41,7 @@ export class OrganizationsController {
   create(
     @Body() createOrganizationDto: CreateOrganizationDto,
   ): Promise<OrganizationDto> {
-    return this.organizationsService.create(createOrganizationDto);
+    return this._organizationsService.create(createOrganizationDto);
   }
 
   @ApiOperation({ summary: 'Get all organizations' })
@@ -55,7 +53,7 @@ export class OrganizationsController {
   @Auth(UserRole.ADMIN)
   @Get()
   getAll(): Promise<OrganizationDto[]> {
-    return this.organizationsService.getAll();
+    return this._organizationsService.getAll();
   }
 
   @ApiOperation({ summary: 'Get organization by id' })
@@ -70,7 +68,7 @@ export class OrganizationsController {
   @Auth(UserRole.ADMIN)
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number): Promise<OrganizationDto> {
-    return this.organizationsService.getById(id);
+    return this._organizationsService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update organization by id' })
@@ -87,7 +85,7 @@ export class OrganizationsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateOrganizationDto: UpdateOrganizationDto,
   ): Promise<OrganizationDto> {
-    return this.organizationsService.update(id, updateOrganizationDto);
+    return this._organizationsService.update(id, updateOrganizationDto);
   }
 
   @ApiOperation({ summary: 'Delete organization by id' })
@@ -101,6 +99,6 @@ export class OrganizationsController {
   @Auth(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.organizationsService.remove(id);
+    return this._organizationsService.remove(id);
   }
 }

@@ -24,7 +24,7 @@ import { UserDto } from './dtos/user.dto';
 @Auth(UserRole.ADMIN, UserRole.USER)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly _usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({
@@ -36,7 +36,7 @@ export class UsersController {
   })
   @Get(':id')
   getUserData(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
-    return this.usersService.getUser(id);
+    return this._usersService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update user by id' })
@@ -48,10 +48,10 @@ export class UsersController {
     description: 'User not found',
   })
   @Patch(':id')
-  update(
+  setUserData(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserDto> {
-    return this.usersService.update(id, updateUserDto);
+    return this._usersService.update(id, updateUserDto);
   }
 }

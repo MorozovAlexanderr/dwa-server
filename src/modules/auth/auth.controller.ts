@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
@@ -32,47 +33,47 @@ import { UserDto } from '../users/dtos/user.dto';
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly authService: AuthService,
-    private readonly usersService: UsersService,
+    private readonly _authService: AuthService,
+    private readonly _usersService: UsersService,
   ) {}
 
   @ApiOperation({ summary: 'Register user' })
   @ApiBody({ type: RegisterUserDto })
   @ApiCreatedResponse({
-    description: 'The user has been successfully registered.',
+    description: 'Successfully registered',
     type: [UserDto],
   })
-  @ApiResponse({
-    status: 404,
+  @ApiBadRequestResponse({
     description: 'Registration failed',
   })
+  @HttpCode(201)
   @Post('register')
   async register(@Body() registerData: RegisterUserDto): Promise<UserDto> {
-    return this.authService.register(registerData);
+    return this._authService.register(registerData);
   }
 
-  @HttpCode(200)
   @ApiOperation({ summary: 'Auth user' })
   @ApiBody({ type: UserLoginDto })
   @ApiResponse({
     status: 200,
-    description: 'Returns access and refresh auth tokens',
+    description: 'Return access and refresh auth tokens',
     type: LoginPayloadDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorised',
   })
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
     const { user } = request;
-    const tokens = this.authService.generateTokens(user.id);
+    const tokens = this._authService.generateTokens(user.id);
 
-    const cookie = this.authService.getCookieWithJwtRefreshToken(
+    const cookie = this._authService.getCookieWithJwtRefreshToken(
       tokens.refreshToken,
     );
 
-    await this.usersService.setCurrentRefreshToken(
+    await this._usersService.setCurrentRefreshToken(
       tokens.refreshToken,
       user.id,
     );
@@ -85,7 +86,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Refresh user auth token' })
   @ApiBearerAuth()
   @ApiResponse({
-    description: 'Returns new access auth token',
+    description: 'Return new access auth token',
     status: 200,
     type: LoginPayloadDto,
   })
@@ -96,13 +97,13 @@ export class AuthController {
   @Get('refresh')
   async refresh(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
     const { user } = request;
-    const tokens = this.authService.generateTokens(user.id);
+    const tokens = this._authService.generateTokens(user.id);
 
-    const cookie = this.authService.getCookieWithJwtRefreshToken(
+    const cookie = this._authService.getCookieWithJwtRefreshToken(
       tokens.refreshToken,
     );
 
-    await this.usersService.setCurrentRefreshToken(
+    await this._usersService.setCurrentRefreshToken(
       tokens.refreshToken,
       user.id,
     );
@@ -124,7 +125,10 @@ export class AuthController {
   @Auth(UserRole.ADMIN, UserRole.USER)
   @Post('logout')
   async logOut(@Req() request: RequestWithUser) {
-    await this.usersService.removeRefreshToken(request.user.id);
-    request.res.setHeader('Set-Cookie', this.authService.getCookiesForLogOut());
+    await this._usersService.removeRefreshToken(request.user.id);
+    request.res.setHeader(
+      'Set-Cookie',
+      this._authService.getCookiesForLogOut(),
+    );
   }
 }

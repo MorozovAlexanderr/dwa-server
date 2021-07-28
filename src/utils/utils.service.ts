@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 export class UtilsService {
   /**
    * convert entity to dtos class instance
@@ -26,5 +28,9 @@ export class UtilsService {
     }
 
     return new model(entity, options);
+  }
+
+  static generateHash(password: string): string {
+    return bcrypt.hashSync(password, 10);
   }
 }

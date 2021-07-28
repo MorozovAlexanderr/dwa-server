@@ -12,36 +12,39 @@ import { WorkspacesService } from '../workspaces/workspaces.service';
 export class DocumentsService {
   constructor(
     @InjectRepository(DocumentEntity)
-    private documentsRepository: Repository<DocumentEntity>,
-    private workspacesService: WorkspacesService,
+    private readonly _documentsRepository: Repository<DocumentEntity>,
+    private readonly _workspacesService: WorkspacesService,
   ) {}
 
   async create(
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentDto> {
-    const { organization } = await this.workspacesService.getCurrent(user);
-    const newDocument = this.documentsRepository.create({
+    const { organization } = await this._workspacesService.getCurrent(user);
+    const newDocument = this._documentsRepository.create({
       creator: user,
       organization,
       ...createDocumentDto,
     });
-    await this.documentsRepository.save(newDocument);
+    await this._documentsRepository.save(newDocument);
     return newDocument.toDto();
   }
 
   async getAll(user: UserEntity): Promise<DocumentDto[]> {
-    const { organization } = await this.workspacesService.getCurrent(user);
-    const documents = await this.documentsRepository.find({
+    const { organization } = await this._workspacesService.getCurrent(user);
+    const documents = await this._documentsRepository.find({
       creator: user,
       organization,
     });
     return documents.map((d) => d.toDto());
   }
 
-  async getById(id: number, user: UserEntity): Promise<DocumentDto> {
-    const { organization } = await this.workspacesService.getCurrent(user);
-    const document = await this.documentsRepository.findOne({
+  async getById(
+    id: number,
+    user: UserEntity,
+  ): Promise<DocumentDto | undefined> {
+    const { organization } = await this._workspacesService.getCurrent(user);
+    const document = await this._documentsRepository.findOne({
       id,
       creator: user,
       organization,
@@ -59,27 +62,27 @@ export class DocumentsService {
     id: number,
     updateDocumentDto: UpdateDocumentDto,
     user: UserEntity,
-  ) {
+  ): Promise<DocumentDto> {
     if (updateDocumentDto.name) {
-      await this.documentsRepository.update(id, {
+      await this._documentsRepository.update(id, {
         name: updateDocumentDto.name,
       });
     }
 
     if (updateDocumentDto.headers) {
-      await this.documentsRepository.update(id, {
+      await this._documentsRepository.update(id, {
         headers: updateDocumentDto.headers,
       });
     }
 
     if (updateDocumentDto.description) {
-      await this.documentsRepository.update(id, {
+      await this._documentsRepository.update(id, {
         description: updateDocumentDto.description,
       });
     }
 
     if (updateDocumentDto.expiresAt) {
-      await this.documentsRepository.update(id, {
+      await this._documentsRepository.update(id, {
         expiresAt: updateDocumentDto.expiresAt,
       });
     }
@@ -88,6 +91,6 @@ export class DocumentsService {
   }
 
   async remove(id: number) {
-    await this.documentsRepository.delete(id);
+    await this._documentsRepository.delete(id);
   }
 }

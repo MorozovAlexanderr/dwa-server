@@ -1,6 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
-import { UpdateWorkspaceDto } from './dto/update-workspace.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkspaceEntity } from './entities/workspace.entity';
 import { Repository } from 'typeorm';
@@ -34,7 +33,10 @@ export class WorkspacesService {
     return workspaces.map((w) => w.toDto());
   }
 
-  async getById(id: number, user: UserEntity): Promise<WorkspaceDto> {
+  async getById(
+    id: number,
+    user: UserEntity,
+  ): Promise<WorkspaceDto | undefined> {
     const workspace = await this.workspacesRepository.findOne({
       relations: ['organization'],
       where: { id, user },

@@ -10,26 +10,26 @@ import { OrganizationDto } from './dtos/organization.dto';
 export class OrganizationsService {
   constructor(
     @InjectRepository(OrganizationEntity)
-    private organizationsRepository: Repository<OrganizationEntity>,
+    private readonly _organizationsRepository: Repository<OrganizationEntity>,
   ) {}
 
   async create(
     createOrganizationDto: CreateOrganizationDto,
   ): Promise<OrganizationDto> {
-    const newFaculty = await this.organizationsRepository.create(
+    const newFaculty = await this._organizationsRepository.create(
       createOrganizationDto,
     );
-    await this.organizationsRepository.save(newFaculty);
+    await this._organizationsRepository.save(newFaculty);
     return newFaculty.toDto();
   }
 
   async getAll(): Promise<OrganizationDto[]> {
-    const organizations = await this.organizationsRepository.find();
+    const organizations = await this._organizationsRepository.find();
     return organizations.map((o) => o.toDto());
   }
 
-  async getById(id: number): Promise<OrganizationDto> {
-    const organization = await this.organizationsRepository.findOne(id);
+  async getById(id: number): Promise<OrganizationDto | undefined> {
+    const organization = await this._organizationsRepository.findOne(id);
     if (organization) {
       return organization.toDto();
     }
@@ -44,7 +44,7 @@ export class OrganizationsService {
     updateOrganizationDto: UpdateOrganizationDto,
   ): Promise<OrganizationDto> {
     if (updateOrganizationDto.name) {
-      await this.organizationsRepository.update(id, {
+      await this._organizationsRepository.update(id, {
         name: updateOrganizationDto.name,
       });
     }
@@ -53,6 +53,6 @@ export class OrganizationsService {
   }
 
   async remove(id: number) {
-    await this.organizationsRepository.delete(id);
+    await this._organizationsRepository.delete(id);
   }
 }

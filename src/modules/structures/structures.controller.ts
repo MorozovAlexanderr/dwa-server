@@ -29,19 +29,19 @@ import { StructureDto } from './dto/structure.dto';
 @Auth(UserRole.ADMIN)
 @Controller('structures')
 export class StructuresController {
-  constructor(private readonly structuresService: StructuresService) {}
+  constructor(private readonly _structuresService: StructuresService) {}
 
   @ApiOperation({ summary: 'Create structure' })
   @ApiBody({ type: CreateStructureDto })
   @ApiCreatedResponse({
-    description: 'The structure has been successfully created.',
+    description: 'Successfully created',
     type: StructureDto,
   })
   @Post()
   create(
     @Body() createStructureDto: CreateStructureDto,
   ): Promise<StructureDto> {
-    return this.structuresService.create(createStructureDto);
+    return this._structuresService.create(createStructureDto);
   }
 
   @ApiOperation({ summary: 'Get all structures' })
@@ -51,7 +51,7 @@ export class StructuresController {
   })
   @Get()
   getAll(): Promise<StructureDto[]> {
-    return this.structuresService.getAll();
+    return this._structuresService.getAll();
   }
 
   @ApiOperation({ summary: 'Get structure by id' })
@@ -64,7 +64,7 @@ export class StructuresController {
   })
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number): Promise<StructureDto> {
-    return this.structuresService.getById(id);
+    return this._structuresService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update structure by id' })
@@ -79,7 +79,7 @@ export class StructuresController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStructureDto: UpdateStructureDto,
   ): Promise<StructureDto> {
-    return this.structuresService.update(id, updateStructureDto);
+    return this._structuresService.update(id, updateStructureDto);
   }
 
   @ApiOperation({ summary: 'Delete structure by id' })
@@ -91,6 +91,6 @@ export class StructuresController {
   })
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number): Promise<StructureDto> {
-    return this.structuresService.remove(id);
+    return this._structuresService.remove(id);
   }
 }

@@ -27,21 +27,19 @@ import { PositionDto } from './dtos/position.dto';
 @ApiTags('positions')
 @Controller('positions')
 export class PositionsController {
-  constructor(private readonly positionsService: PositionsService) {}
-
-  // TODO: endpoint for getting positions with public access (using in registration)
+  constructor(private readonly _positionsService: PositionsService) {}
 
   @ApiOperation({ summary: 'Create position' })
   @ApiBody({ type: CreatePositionDto })
   @ApiCreatedResponse({
-    description: 'The position has been successfully created.',
+    description: 'Successfully created',
     type: PositionDto,
   })
   @ApiBearerAuth()
   @Auth(UserRole.ADMIN)
   @Post()
   create(@Body() createPositionDto: CreatePositionDto): Promise<PositionDto> {
-    return this.positionsService.create(createPositionDto);
+    return this._positionsService.create(createPositionDto);
   }
 
   @ApiOperation({ summary: 'Get all positions' })
@@ -53,7 +51,7 @@ export class PositionsController {
   @Auth(UserRole.ADMIN)
   @Get()
   getAll(): Promise<PositionDto[]> {
-    return this.positionsService.getAll();
+    return this._positionsService.getAll();
   }
 
   @ApiOperation({ summary: 'Get position by id' })
@@ -68,7 +66,7 @@ export class PositionsController {
   @Auth(UserRole.ADMIN)
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number): Promise<PositionDto> {
-    return this.positionsService.getById(id);
+    return this._positionsService.getById(id);
   }
 
   @ApiOperation({ summary: 'Update position by id' })
@@ -85,7 +83,7 @@ export class PositionsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePositionDto: UpdatePositionDto,
   ): Promise<PositionDto> {
-    return this.positionsService.update(id, updatePositionDto);
+    return this._positionsService.update(id, updatePositionDto);
   }
 
   @ApiOperation({ summary: 'Delete position by id' })
@@ -99,6 +97,6 @@ export class PositionsController {
   @Auth(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.positionsService.remove(id);
+    return this._positionsService.remove(id);
   }
 }
