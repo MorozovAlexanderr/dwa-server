@@ -27,7 +27,7 @@ export class WorkspacesService {
 
   async getAll(user: UserEntity): Promise<WorkspaceDto[]> {
     const workspaces = await this.workspacesRepository.find({
-      relations: ['organization', 'structure', 'position'],
+      relations: ['organization'],
       where: { user },
     });
     return workspaces.map((w) => w.toDto());
