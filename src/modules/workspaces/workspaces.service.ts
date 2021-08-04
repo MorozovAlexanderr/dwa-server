@@ -50,20 +50,23 @@ export class WorkspacesService {
     );
   }
 
-  async getCurrent(user: UserEntity): Promise<WorkspaceDto> {
+  async getCurrent(user: UserEntity): Promise<WorkspaceEntity> {
     const workspace = await this.workspacesRepository.findOne({
       relations: ['organization'],
       where: { user, isCurrent: true },
     });
-    return workspace.toDto();
+    return workspace;
   }
 
   async switch(id: number, user): Promise<WorkspaceDto> {
     const currentWorkspace = await this.getCurrent(user);
 
-    await this.workspacesRepository.update(currentWorkspace.id, {
-      isCurrent: false,
-    });
+    if (currentWorkspace) {
+      await this.workspacesRepository.update(currentWorkspace.id, {
+        isCurrent: false,
+      });
+    }
+
     await this.workspacesRepository.update(id, {
       isCurrent: true,
     });

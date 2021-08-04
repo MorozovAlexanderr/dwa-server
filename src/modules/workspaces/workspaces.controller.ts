@@ -62,8 +62,9 @@ export class WorkspacesController {
     type: WorkspaceDto,
   })
   @Get('current')
-  getCurrent(@AuthUser() user: UserEntity): Promise<WorkspaceDto> {
-    return this.workspacesService.getCurrent(user);
+  async getCurrent(@AuthUser() user: UserEntity): Promise<WorkspaceDto> {
+    const workspaceEntity = await this.workspacesService.getCurrent(user);
+    return workspaceEntity.toDto();
   }
 
   @ApiOperation({ summary: 'Get workspace by id' })
