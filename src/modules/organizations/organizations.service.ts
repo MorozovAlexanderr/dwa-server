@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateOrganizationDto } from './dtos/create-organization.dto';
 import { UpdateOrganizationDto } from './dtos/update-organization.dto';
 import { OrganizationEntity } from './entities/organization.entity';
-import { OrganizationDto } from './dtos/organization.dto';
 
 @Injectable()
 export class OrganizationsService {
@@ -15,23 +14,22 @@ export class OrganizationsService {
 
   async create(
     createOrganizationDto: CreateOrganizationDto,
-  ): Promise<OrganizationDto> {
+  ): Promise<OrganizationEntity> {
     const newFaculty = await this._organizationsRepository.create(
       createOrganizationDto,
     );
     await this._organizationsRepository.save(newFaculty);
-    return newFaculty.toDto();
+    return newFaculty;
   }
 
-  async getAll(): Promise<OrganizationDto[]> {
-    const organizations = await this._organizationsRepository.find();
-    return organizations.map((o) => o.toDto());
+  async getAll(): Promise<OrganizationEntity[]> {
+    return await this._organizationsRepository.find();
   }
 
-  async getById(id: number): Promise<OrganizationDto | undefined> {
+  async getById(id: number): Promise<OrganizationEntity | undefined> {
     const organization = await this._organizationsRepository.findOne(id);
     if (organization) {
-      return organization.toDto();
+      return organization;
     }
     throw new HttpException(
       'Organization with this id does not exists',
@@ -42,7 +40,7 @@ export class OrganizationsService {
   async update(
     id: number,
     updateOrganizationDto: UpdateOrganizationDto,
-  ): Promise<OrganizationDto> {
+  ): Promise<OrganizationEntity> {
     if (updateOrganizationDto.name) {
       await this._organizationsRepository.update(id, {
         name: updateOrganizationDto.name,

@@ -39,11 +39,15 @@ export class WorkspacesController {
     type: WorkspaceDto,
   })
   @Post()
-  create(
+  async create(
     @Body() createWorkspaceDto: CreateWorkspaceDto,
     @AuthUser() user: UserEntity,
   ): Promise<WorkspaceDto> {
-    return this.workspacesService.create(createWorkspaceDto, user);
+    const workspace = await this.workspacesService.create(
+      createWorkspaceDto,
+      user,
+    );
+    return workspace.toDto();
   }
 
   @ApiOperation({ summary: 'Get all workspaces' })
@@ -52,8 +56,9 @@ export class WorkspacesController {
     type: [WorkspaceDto],
   })
   @Get()
-  getAll(@AuthUser() user: UserEntity): Promise<WorkspaceDto[]> {
-    return this.workspacesService.getAll(user);
+  async getAll(@AuthUser() user: UserEntity): Promise<WorkspaceDto[]> {
+    const workspaces = await this.workspacesService.getAll(user);
+    return workspaces.map((w) => w.toDto());
   }
 
   @ApiOperation({ summary: 'Get current workspace' })
@@ -76,11 +81,12 @@ export class WorkspacesController {
     description: 'Workspace not found',
   })
   @Get(':id')
-  getOne(
+  async getOne(
     @Param('id', ParseIntPipe) id: number,
     @AuthUser() user: UserEntity,
   ): Promise<WorkspaceDto> {
-    return this.workspacesService.getById(id, user);
+    const workspace = await this.workspacesService.getById(id, user);
+    return workspace.toDto();
   }
 
   @ApiOperation({ summary: 'Switch workspace' })
@@ -92,11 +98,12 @@ export class WorkspacesController {
     description: 'Workspace not found',
   })
   @Patch(':id/switch')
-  switch(
+  async switch(
     @Param('id', ParseIntPipe) id: number,
     @AuthUser() user: UserEntity,
   ): Promise<WorkspaceDto> {
-    return this.workspacesService.switch(id, user);
+    const workspace = await this.workspacesService.switch(id, user);
+    return workspace.toDto();
   }
 
   @ApiOperation({ summary: 'Delete workspace by id' })

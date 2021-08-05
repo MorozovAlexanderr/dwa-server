@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { WorkspaceEntity } from './entities/workspace.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
-import { WorkspaceDto } from './dto/workspace.dto';
 
 @Injectable()
 export class WorkspacesService {
@@ -16,33 +15,33 @@ export class WorkspacesService {
   async create(
     createWorkspaceDto: CreateWorkspaceDto,
     user: UserEntity,
-  ): Promise<WorkspaceDto> {
+  ): Promise<WorkspaceEntity> {
     const newWorkspace = await this.workspacesRepository.create({
       user,
       ...createWorkspaceDto,
     });
     await this.workspacesRepository.save(newWorkspace);
-    return newWorkspace.toDto();
+    return newWorkspace;
   }
 
-  async getAll(user: UserEntity): Promise<WorkspaceDto[]> {
+  async getAll(user: UserEntity): Promise<WorkspaceEntity[]> {
     const workspaces = await this.workspacesRepository.find({
       relations: ['organization'],
       where: { user },
     });
-    return workspaces.map((w) => w.toDto());
+    return workspaces;
   }
 
   async getById(
     id: number,
     user: UserEntity,
-  ): Promise<WorkspaceDto | undefined> {
+  ): Promise<WorkspaceEntity | undefined> {
     const workspace = await this.workspacesRepository.findOne({
       relations: ['organization'],
       where: { id, user },
     });
     if (workspace) {
-      return workspace.toDto();
+      return workspace;
     }
     throw new HttpException(
       'Workspace with this id does not exists',
@@ -50,7 +49,7 @@ export class WorkspacesService {
     );
   }
 
-  async getCurrent(user: UserEntity): Promise<WorkspaceEntity> {
+  async getCurrent(user: UserEntity): Promise<WorkspaceEntity | undefined> {
     const workspace = await this.workspacesRepository.findOne({
       relations: ['organization'],
       where: { user, isCurrent: true },
@@ -58,7 +57,7 @@ export class WorkspacesService {
     return workspace;
   }
 
-  async switch(id: number, user): Promise<WorkspaceDto> {
+  async switch(id: number, user): Promise<WorkspaceEntity> {
     const currentWorkspace = await this.getCurrent(user);
 
     if (currentWorkspace) {

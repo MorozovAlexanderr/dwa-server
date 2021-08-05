@@ -38,10 +38,13 @@ export class OrganizationsController {
   @ApiBearerAuth()
   @Auth(UserRole.ADMIN)
   @Post()
-  create(
+  async create(
     @Body() createOrganizationDto: CreateOrganizationDto,
   ): Promise<OrganizationDto> {
-    return this._organizationsService.create(createOrganizationDto);
+    const organization = await this._organizationsService.create(
+      createOrganizationDto,
+    );
+    return organization.toDto();
   }
 
   @ApiOperation({ summary: 'Get all organizations' })
@@ -52,8 +55,9 @@ export class OrganizationsController {
   @ApiBearerAuth()
   @Auth(UserRole.ADMIN)
   @Get()
-  getAll(): Promise<OrganizationDto[]> {
-    return this._organizationsService.getAll();
+  async getAll(): Promise<OrganizationDto[]> {
+    const organizations = await this._organizationsService.getAll();
+    return organizations.map((o) => o.toDto());
   }
 
   @ApiOperation({ summary: 'Get organization by id' })
@@ -67,8 +71,11 @@ export class OrganizationsController {
   @ApiBearerAuth()
   @Auth(UserRole.ADMIN)
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number): Promise<OrganizationDto> {
-    return this._organizationsService.getById(id);
+  async getOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<OrganizationDto> {
+    const organization = await this._organizationsService.getById(id);
+    return organization.toDto();
   }
 
   @ApiOperation({ summary: 'Update organization by id' })
@@ -81,11 +88,15 @@ export class OrganizationsController {
   @ApiBearerAuth()
   @Auth(UserRole.ADMIN)
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateOrganizationDto: UpdateOrganizationDto,
   ): Promise<OrganizationDto> {
-    return this._organizationsService.update(id, updateOrganizationDto);
+    const organization = await this._organizationsService.update(
+      id,
+      updateOrganizationDto,
+    );
+    return organization.toDto();
   }
 
   @ApiOperation({ summary: 'Delete organization by id' })

@@ -35,8 +35,9 @@ export class UsersController {
     description: 'User not found',
   })
   @Get(':id')
-  getUserData(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
-    return this._usersService.getById(id);
+  async getUserData(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
+    const user = await this._usersService.getById(id);
+    return user.toDto();
   }
 
   @ApiOperation({ summary: 'Update user by id' })
@@ -48,10 +49,11 @@ export class UsersController {
     description: 'User not found',
   })
   @Patch(':id')
-  setUserData(
+  async setUserData(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserDto> {
-    return this._usersService.update(id, updateUserDto);
+    const user = await this._usersService.update(id, updateUserDto);
+    return user.toDto();
   }
 }
