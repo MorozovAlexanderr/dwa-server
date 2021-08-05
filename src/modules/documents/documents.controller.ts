@@ -43,11 +43,15 @@ export class DocumentsController {
     type: DocumentDto,
   })
   @Post()
-  create(
+  async create(
     @Body() createDocumentDto: CreateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    return this._documentsService.create(createDocumentDto, user);
+    const document = await this._documentsService.create(
+      createDocumentDto,
+      user,
+    );
+    return document.toDto();
   }
 
   @ApiOperation({ summary: 'Get all documents' })
@@ -56,8 +60,9 @@ export class DocumentsController {
     type: [DocumentDto],
   })
   @Get()
-  getAll(@AuthUser() user: UserEntity): Promise<DocumentDto[]> {
-    return this._documentsService.getAll(user);
+  async getAll(@AuthUser() user: UserEntity): Promise<DocumentDto[]> {
+    const documents = await this._documentsService.getAll(user);
+    return documents.map((d) => d.toDto());
   }
 
   @ApiOperation({ summary: 'Get document by id' })
@@ -69,11 +74,12 @@ export class DocumentsController {
     description: 'Document not found',
   })
   @Get(':id')
-  getOne(
+  async getOne(
     @Param('id', ParseIntPipe) id: number,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    return this._documentsService.getById(id, user);
+    const document = await this._documentsService.getById(id, user);
+    return document.toDto();
   }
 
   @ApiOperation({ summary: 'Update document by id' })
@@ -85,12 +91,17 @@ export class DocumentsController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDocumentDto: UpdateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    return this._documentsService.update(id, updateDocumentDto, user);
+    const document = await this._documentsService.update(
+      id,
+      updateDocumentDto,
+      user,
+    );
+    return document.toDto();
   }
 
   @ApiOperation({ summary: 'Delete document by id' })

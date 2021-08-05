@@ -14,20 +14,20 @@ export class UsersService {
     private readonly _usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(registerUserDto: RegisterUserDto): Promise<UserDto> {
+  async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
     const newUser = this._usersRepository.create(registerUserDto);
     await this._usersRepository.save(newUser);
-    return newUser.toDto();
+    return newUser;
   }
 
   async findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {
     return this._usersRepository.findOne(findData);
   }
 
-  async getById(id: number): Promise<UserDto | undefined> {
+  async getById(id: number): Promise<UserEntity | undefined> {
     const user = await this._usersRepository.findOne({ id });
     if (user) {
-      return user.toDto();
+      return user;
     }
     throw new HttpException(
       'User with this id does not exists',
@@ -35,7 +35,7 @@ export class UsersService {
     );
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserDto> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
     if (updateUserDto.firstName) {
       await this._usersRepository.update(id, {
         firstName: updateUserDto.firstName,

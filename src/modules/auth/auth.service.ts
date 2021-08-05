@@ -5,8 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { RegisterUserDto } from './dtos/user-register.dto';
 import { TokenPayload } from './interfaces/token-payload.interface';
-import { UserDto } from '../users/dtos/user.dto';
 import { UtilsService } from '../../utils/utils.service';
+import { UserEntity } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +27,7 @@ export class AuthService {
     return null;
   }
 
-  async register(user: RegisterUserDto): Promise<UserDto> {
+  async register(user: RegisterUserDto): Promise<UserEntity> {
     const candidate = await this._usersService.findOne({ email: user.email });
     if (candidate) {
       throw new HttpException(

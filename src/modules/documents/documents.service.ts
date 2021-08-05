@@ -4,7 +4,6 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentEntity } from './entities/document.entity';
 import { Repository } from 'typeorm';
-import { DocumentDto } from './dto/document.dto';
 import { UserEntity } from '../users/entities/user.entity';
 import { WorkspacesService } from '../workspaces/workspaces.service';
 
@@ -19,7 +18,7 @@ export class DocumentsService {
   async create(
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
-  ): Promise<DocumentDto> {
+  ): Promise<DocumentEntity> {
     const { organization } = await this._workspacesService.getCurrent(user);
     const newDocument = this._documentsRepository.create({
       creator: user,
@@ -27,22 +26,22 @@ export class DocumentsService {
       ...createDocumentDto,
     });
     await this._documentsRepository.save(newDocument);
-    return newDocument.toDto();
+    return newDocument;
   }
 
-  async getAll(user: UserEntity): Promise<DocumentDto[]> {
+  async getAll(user: UserEntity): Promise<DocumentEntity[]> {
     const { organization } = await this._workspacesService.getCurrent(user);
     const documents = await this._documentsRepository.find({
       creator: user,
       organization,
     });
-    return documents.map((d) => d.toDto());
+    return documents;
   }
 
   async getById(
     id: number,
     user: UserEntity,
-  ): Promise<DocumentDto | undefined> {
+  ): Promise<DocumentEntity | undefined> {
     const { organization } = await this._workspacesService.getCurrent(user);
     const document = await this._documentsRepository.findOne({
       id,
@@ -50,7 +49,7 @@ export class DocumentsService {
       organization,
     });
     if (document) {
-      return document.toDto();
+      return document;
     }
     throw new HttpException(
       'Document with this id does not exists',
@@ -62,7 +61,7 @@ export class DocumentsService {
     id: number,
     updateDocumentDto: UpdateDocumentDto,
     user: UserEntity,
-  ): Promise<DocumentDto> {
+  ): Promise<DocumentEntity> {
     if (updateDocumentDto.name) {
       await this._documentsRepository.update(id, {
         name: updateDocumentDto.name,
