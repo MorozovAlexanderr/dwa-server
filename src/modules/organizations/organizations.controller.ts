@@ -1,12 +1,12 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -36,7 +36,7 @@ export class OrganizationsController {
     type: OrganizationDto,
   })
   @ApiBearerAuth()
-  @Auth(UserRole.ADMIN)
+  @Auth(UserRole.ADMIN, UserRole.USER)
   @Post()
   async create(
     @Body() createOrganizationDto: CreateOrganizationDto,
