@@ -6,6 +6,7 @@ import { DocumentEntity } from './entities/document.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { WorkspacesService } from '../workspaces/workspaces.service';
+import { DocumentNotFoundException } from '../../exceptions/document-not-found.exception';
 
 @Injectable()
 export class DocumentsService {
@@ -48,13 +49,10 @@ export class DocumentsService {
       creator: user,
       organization,
     });
-    if (document) {
-      return document;
+    if (!document) {
+      throw new DocumentNotFoundException();
     }
-    throw new HttpException(
-      'Document with this id does not exists',
-      HttpStatus.NOT_FOUND,
-    );
+    return document;
   }
 
   async update(

@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateWorkspaceDto } from './dto/create-workspace.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { WorkspaceEntity } from './entities/workspace.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
+import { WorkspaceNotFoundException } from '../../exceptions/workspace-not-found.exception';
 
 @Injectable()
 export class WorkspacesService {
@@ -40,13 +41,10 @@ export class WorkspacesService {
       relations: ['organization'],
       where: { id, user },
     });
-    if (workspace) {
-      return workspace;
+    if (!workspace) {
+      throw new WorkspaceNotFoundException();
     }
-    throw new HttpException(
-      'Workspace with this id does not exists',
-      HttpStatus.NOT_FOUND,
-    );
+    return workspace;
   }
 
   async getCurrent(user: UserEntity): Promise<WorkspaceEntity | undefined> {
@@ -54,6 +52,9 @@ export class WorkspacesService {
       relations: ['organization'],
       where: { user, isCurrent: true },
     });
+    if (!workspace) {
+      throw new WorkspaceNotFoundException('current error');
+    }
     return workspace;
   }
 
