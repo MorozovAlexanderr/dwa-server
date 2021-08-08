@@ -1,11 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindConditions, Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from './entities/user.entity';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserDto } from './dtos/user.dto';
 import { RegisterUserDto } from '../auth/dtos/user-register.dto';
+import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
 
 @Injectable()
 export class UsersService {
@@ -26,13 +26,10 @@ export class UsersService {
 
   async getById(id: number): Promise<UserEntity | undefined> {
     const user = await this._usersRepository.findOne({ id });
-    if (user) {
-      return user;
+    if (!user) {
+      throw new UserNotFoundException();
     }
-    throw new HttpException(
-      'User with this id does not exists',
-      HttpStatus.NOT_FOUND,
-    );
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {

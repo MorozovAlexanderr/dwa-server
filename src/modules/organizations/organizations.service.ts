@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateOrganizationDto } from './dtos/create-organization.dto';
 import { UpdateOrganizationDto } from './dtos/update-organization.dto';
 import { OrganizationEntity } from './entities/organization.entity';
+import { OrganizationNotFoundException } from '../../exceptions/organization-not-found.exception';
 
 @Injectable()
 export class OrganizationsService {
@@ -28,13 +29,10 @@ export class OrganizationsService {
 
   async getById(id: number): Promise<OrganizationEntity | undefined> {
     const organization = await this._organizationsRepository.findOne(id);
-    if (organization) {
-      return organization;
+    if (!organization) {
+      throw new OrganizationNotFoundException();
     }
-    throw new HttpException(
-      'Organization with this id does not exists',
-      HttpStatus.NOT_FOUND,
-    );
+    return organization;
   }
 
   async update(
