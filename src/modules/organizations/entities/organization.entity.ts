@@ -5,6 +5,7 @@ import { StructureEntity } from '../../structures/entities/structure.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
 import { DocumentEntity } from '../../documents/entities/document.entity';
 import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity({ name: 'organizations' })
 export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
@@ -14,14 +15,17 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
   @OneToMany(() => DocumentEntity, (document) => document.organization)
   documents: DocumentEntity[];
 
+  @OneToMany(() => UserEntity, (user) => user.organization)
+  users: UserEntity[];
+
   // @OneToMany(() => StructureEntity, (structure) => structure.organization)
   // structures: StructureEntity[];
   //
   // @OneToMany(() => PositionEntity, (position) => position.organization)
   // positions: PositionEntity[];
 
-  @OneToMany(() => WorkspaceEntity, (workspace) => workspace.organization)
-  workspaces: WorkspaceEntity[];
+  // @OneToMany(() => WorkspaceEntity, (workspace) => workspace.organization)
+  // workspaces: WorkspaceEntity[];
 
   dtoClass = OrganizationDto;
 }

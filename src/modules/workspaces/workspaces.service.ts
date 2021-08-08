@@ -13,17 +13,17 @@ export class WorkspacesService {
     private workspacesRepository: Repository<WorkspaceEntity>,
   ) {}
 
-  async create(
-    createWorkspaceDto: CreateWorkspaceDto,
-    user: UserEntity,
-  ): Promise<WorkspaceEntity> {
-    const newWorkspace = await this.workspacesRepository.create({
-      user,
-      ...createWorkspaceDto,
-    });
-    await this.workspacesRepository.save(newWorkspace);
-    return newWorkspace;
-  }
+  // async create(
+  //   createWorkspaceDto: CreateWorkspaceDto,
+  //   user: UserEntity,
+  // ): Promise<WorkspaceEntity> {
+  //   const newWorkspace = await this.workspacesRepository.create({
+  //     user,
+  //     ...createWorkspaceDto,
+  //   });
+  //   await this.workspacesRepository.save(newWorkspace);
+  //   return newWorkspace;
+  // }
 
   async getAll(user: UserEntity): Promise<WorkspaceEntity[]> {
     const workspaces = await this.workspacesRepository.find({

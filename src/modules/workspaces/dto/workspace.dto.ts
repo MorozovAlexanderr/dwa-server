@@ -10,8 +10,8 @@ export class WorkspaceDto extends AbstractDto {
   // @ApiProperty({ type: UserDto })
   // readonly user: UserDto;
 
-  @ApiProperty({ type: OrganizationDto })
-  readonly organization: OrganizationDto;
+  // @ApiProperty({ type: OrganizationDto })
+  // readonly organization: OrganizationDto;
 
   // @ApiProperty({ type: StructureDto })
   // readonly structure: StructureDto;
@@ -28,7 +28,7 @@ export class WorkspaceDto extends AbstractDto {
   constructor(workspace: WorkspaceEntity) {
     super(workspace);
     // this.user = workspace.user;
-    this.organization = workspace.organization;
+    // this.organization = workspace.organization;
     // this.structure = workspace.structure;
     // this.position = workspace.position;
     this.isCurrent = workspace.isCurrent;

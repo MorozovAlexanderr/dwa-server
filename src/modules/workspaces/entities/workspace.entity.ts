@@ -7,20 +7,20 @@ import { StructureEntity } from '../../structures/entities/structure.entity';
 import { PositionEntity } from '../../positions/entities/position.entity';
 import { UserWorkspaceRole } from '../../../common/enums/workspace-roles.enum';
 
-@Entity('workspaces')
+// @Entity('workspaces')
 export class WorkspaceEntity extends AbstractEntity<WorkspaceDto> {
-  @ManyToOne(() => UserEntity, (user) => user.workspaces)
-  user: UserEntity;
+  // @ManyToOne(() => UserEntity, (user) => user.workspaces)
+  // user: UserEntity;
 
-  @ManyToOne(
-    () => OrganizationEntity,
-    (organization) => organization.workspaces,
-  )
-  organization: OrganizationEntity;
+  // @ManyToOne(
+  //   () => OrganizationEntity,
+  //   (organization) => organization.workspaces,
+  // )
+  // organization: OrganizationEntity;
 
   // @ManyToOne(() => StructureEntity, (structure) => structure.workspaces)
   // structure: StructureEntity;
-  //
+
   // @ManyToOne(() => PositionEntity, (position) => position.workspaces)
   // position: PositionEntity;
 
