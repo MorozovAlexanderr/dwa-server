@@ -9,7 +9,7 @@ import { DocumentsModule } from './modules/documents/documents.module';
 import { StructuresModule } from './modules/structures/structures.module';
 import { WorkspacesModule } from './modules/workspaces/workspaces.module';
 
-// NOTE: Positions and Structures modules are temporarily disabled
+// NOTE: Positions, Structures and Workspaces modules are temporary disabled
 
 @Module({
   imports: [
@@ -19,9 +19,9 @@ import { WorkspacesModule } from './modules/workspaces/workspaces.module';
     OrganizationsModule,
     // PositionsModule,
     // StructuresModule,
+    // WorkspacesModule,
     AuthModule,
     DocumentsModule,
-    WorkspacesModule,
   ],
   controllers: [],
   providers: [],

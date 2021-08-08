@@ -13,17 +13,15 @@ export class DocumentsService {
   constructor(
     @InjectRepository(DocumentEntity)
     private readonly _documentsRepository: Repository<DocumentEntity>,
-    private readonly _workspacesService: WorkspacesService,
   ) {}
 
   async create(
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentEntity> {
-    const { organization } = await this._workspacesService.getCurrent(user);
     const newDocument = this._documentsRepository.create({
       creator: user,
-      organization,
+      organization: user.organization,
       ...createDocumentDto,
     });
     await this._documentsRepository.save(newDocument);
@@ -31,10 +29,9 @@ export class DocumentsService {
   }
 
   async getAll(user: UserEntity): Promise<DocumentEntity[]> {
-    const { organization } = await this._workspacesService.getCurrent(user);
     const documents = await this._documentsRepository.find({
       creator: user,
-      organization,
+      organization: user.organization,
     });
     return documents;
   }
@@ -43,11 +40,10 @@ export class DocumentsService {
     id: number,
     user: UserEntity,
   ): Promise<DocumentEntity | undefined> {
-    const { organization } = await this._workspacesService.getCurrent(user);
     const document = await this._documentsRepository.findOne({
       id,
       creator: user,
-      organization,
+      organization: user.organization,
     });
     if (!document) {
       throw new DocumentNotFoundException();

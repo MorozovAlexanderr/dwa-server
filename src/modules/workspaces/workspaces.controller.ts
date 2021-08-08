@@ -32,23 +32,23 @@ import {
 export class WorkspacesController {
   constructor(private readonly workspacesService: WorkspacesService) {}
 
-  @ApiOperation({ summary: 'Create workspace' })
-  @ApiBody({ type: CreateWorkspaceDto })
-  @ApiCreatedResponse({
-    description: 'Successfully created',
-    type: WorkspaceDto,
-  })
-  @Post()
-  async create(
-    @Body() createWorkspaceDto: CreateWorkspaceDto,
-    @AuthUser() user: UserEntity,
-  ): Promise<WorkspaceDto> {
-    const workspace = await this.workspacesService.create(
-      createWorkspaceDto,
-      user,
-    );
-    return workspace.toDto();
-  }
+  // @ApiOperation({ summary: 'Create workspace' })
+  // @ApiBody({ type: CreateWorkspaceDto })
+  // @ApiCreatedResponse({
+  //   description: 'Successfully created',
+  //   type: WorkspaceDto,
+  // })
+  // @Post()
+  // async create(
+  //   @Body() createWorkspaceDto: CreateWorkspaceDto,
+  //   @AuthUser() user: UserEntity,
+  // ): Promise<WorkspaceDto> {
+  //   const workspace = await this.workspacesService.create(
+  //     createWorkspaceDto,
+  //     user,
+  //   );
+  //   return workspace.toDto();
+  // }
 
   @ApiOperation({ summary: 'Get all workspaces' })
   @ApiResponse({
