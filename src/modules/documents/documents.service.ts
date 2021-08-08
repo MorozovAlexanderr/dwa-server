@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentEntity } from './entities/document.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
-import { WorkspacesService } from '../workspaces/workspaces.service';
 import { DocumentNotFoundException } from '../../exceptions/document-not-found.exception';
 
 @Injectable()

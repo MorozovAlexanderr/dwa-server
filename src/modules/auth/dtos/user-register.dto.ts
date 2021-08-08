@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
-import { OrganizationDto } from '../../organizations/dtos/organization.dto';
-import { PositionDto } from '../../positions/dtos/position.dto';
-import { StructureDto } from '../../structures/dto/structure.dto';
 
 export class RegisterUserDto {
   @ApiProperty({ minLength: 2, maxLength: 70 })

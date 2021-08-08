@@ -4,7 +4,6 @@ import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserDto } from '../dtos/user.dto';
 import { DocumentEntity } from '../../documents/entities/document.entity';
 import { Exclude } from 'class-transformer';
-import { WorkspaceEntity } from '../../workspaces/entities/workspace.entity';
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
 
 @Entity({ name: 'users' })
@@ -30,9 +29,6 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @Column({ default: true })
   isActive: boolean;
-
-  // @OneToMany(() => WorkspaceEntity, (workspace) => workspace.user)
-  // workspaces: WorkspaceEntity[];
 
   @ManyToOne(() => OrganizationEntity, (organization) => organization.users, {
     eager: true,
