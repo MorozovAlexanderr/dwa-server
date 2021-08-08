@@ -55,6 +55,12 @@ export class UsersService {
       await this.updatePassword(id, updateUserDto.password);
     }
 
+    if (updateUserDto.organization) {
+      await this._usersRepository.update(id, {
+        organization: updateUserDto.organization,
+      });
+    }
+
     return this.getById(id);
   }
 
