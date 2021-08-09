@@ -1,59 +1,46 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Patch,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UsersService } from './users.service';
+import { UsersService } from './services/users.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserRole } from '../../common/enums/roles.enum';
-import { Auth } from '../../decorators/auth.decorator';
 import { UserDto } from './dtos/user.dto';
+import { AuthUser } from '../../decorators/auth-user.decorator';
+import { UserEntity } from './entities/user.entity';
+import JwtAuthGuard from '../../guards/jwt.-auth.guard';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@Auth(UserRole.ADMIN, UserRole.USER)
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {
   constructor(private readonly _usersService: UsersService) {}
 
-  @ApiOperation({ summary: 'Get user by id' })
+  @ApiOperation({ summary: 'Get user' })
   @ApiResponse({
     status: 200,
     type: UserDto,
   })
-  @ApiNotFoundResponse({
-    description: 'User not found',
-  })
-  @Get(':id')
-  async getUserData(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
-    const user = await this._usersService.getById(id);
-    return user.toDto();
+  @Get('/current')
+  async getUserData(@AuthUser() user: UserEntity): Promise<UserDto> {
+    const userEntity = await this._usersService.getUser({ id: user.id });
+    return userEntity.toDto();
   }
 
-  @ApiOperation({ summary: 'Update user by id' })
+  @ApiOperation({ summary: 'Update user' })
   @ApiResponse({
     status: 200,
     type: UserDto,
   })
-  @ApiNotFoundResponse({
-    description: 'User not found',
-  })
-  @Patch(':id')
+  @Patch('update-current')
   async setUserData(
-    @Param('id', ParseIntPipe) id: number,
+    @AuthUser() user: UserEntity,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserDto> {
-    const user = await this._usersService.update(id, updateUserDto);
-    return user.toDto();
+    const updatedUser = await this._usersService.update(user, updateUserDto);
+    return updatedUser.toDto();
   }
 }

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from '../users.service';
+import { UsersService } from '../services/users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 

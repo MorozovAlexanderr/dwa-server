@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindConditions, Repository, UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from './entities/user.entity';
-import { UpdateUserDto } from './dtos/update-user.dto';
-import { RegisterUserDto } from '../auth/dtos/user-register.dto';
-import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
+import { UserEntity } from '../entities/user.entity';
+import { UpdateUserDto } from '../dtos/update-user.dto';
+import { RegisterUserDto } from '../../auth/dtos/user-register.dto';
+import { UserNotFoundException } from '../../../exceptions/user-not-found.exception';
 
 @Injectable()
 export class UsersService {
@@ -20,48 +20,46 @@ export class UsersService {
     return newUser;
   }
 
-  async findOne(findData: FindConditions<UserEntity>): Promise<UserEntity> {
-    return this._usersRepository.findOne(findData);
-  }
-
-  async getById(id: number): Promise<UserEntity | undefined> {
-    const user = await this._usersRepository.findOne({ id });
+  async getUser(
+    findData: FindConditions<UserEntity>,
+  ): Promise<UserEntity | undefined> {
+    const user = await this._usersRepository.findOne({
+      relations: ['userWorkspace', 'userWorkspace.organization'],
+      where: findData,
+    });
     if (!user) {
       throw new UserNotFoundException();
     }
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(
+    user: UserEntity,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserEntity> {
     if (updateUserDto.firstName) {
-      await this._usersRepository.update(id, {
+      await this._usersRepository.update(user.id, {
         firstName: updateUserDto.firstName,
       });
     }
 
     if (updateUserDto.secondName) {
-      await this._usersRepository.update(id, {
+      await this._usersRepository.update(user.id, {
         secondName: updateUserDto.secondName,
       });
     }
 
     if (updateUserDto.email) {
-      await this._usersRepository.update(id, {
+      await this._usersRepository.update(user.id, {
         email: updateUserDto.email,
       });
     }
 
     if (updateUserDto.password) {
-      await this.updatePassword(id, updateUserDto.password);
+      await this.updatePassword(user.id, updateUserDto.password);
     }
 
-    if (updateUserDto.organization) {
-      await this._usersRepository.update(id, {
-        organization: updateUserDto.organization,
-      });
-    }
-
-    return this.getById(id);
+    return this.getUser({ id: user.id });
   }
 
   async updatePassword(
@@ -86,7 +84,7 @@ export class UsersService {
     refreshToken: string,
     userId: number,
   ): Promise<UserEntity | undefined> {
-    const user = await this.findOne({ id: userId });
+    const user = await this.getUser({ id: userId });
 
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,

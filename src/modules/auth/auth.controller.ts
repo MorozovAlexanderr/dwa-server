@@ -8,26 +8,23 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dtos/user-register.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LocalAuthGuard } from '../../guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/request-with-user.interface';
-import { UsersService } from '../users/users.service';
-import JwtRefreshGuard from './guards/jwt-refresh.guard';
+import { UsersService } from '../users/services/users.service';
+import JwtRefreshGuard from '../../guards/jwt-refresh.guard';
 import { UserLoginDto } from './dtos/user-login.dto';
-import { Auth } from '../../decorators/auth.decorator';
-import { UserRole } from '../../common/enums/roles.enum';
 import { LoginPayloadDto } from './dtos/login-payload.dto';
 import { UserDto } from '../users/dtos/user.dto';
+import JwtAuthGuard from '../../guards/jwt.-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -43,9 +40,6 @@ export class AuthController {
     description: 'Successfully registered',
     type: [UserDto],
   })
-  @ApiBadRequestResponse({
-    description: 'Registration failed',
-  })
   @HttpCode(201)
   @Post('register')
   async register(@Body() registerData: RegisterUserDto): Promise<UserDto> {
@@ -59,9 +53,6 @@ export class AuthController {
     status: 200,
     description: 'Return access and refresh auth tokens',
     type: LoginPayloadDto,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorised',
   })
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
@@ -91,9 +82,6 @@ export class AuthController {
     status: 200,
     type: LoginPayloadDto,
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorised',
-  })
   @UseGuards(JwtRefreshGuard)
   @Get('refresh')
   async refresh(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
@@ -119,11 +107,8 @@ export class AuthController {
   @ApiResponse({
     status: 200,
   })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorised',
-  })
   @HttpCode(200)
-  @Auth(UserRole.ADMIN, UserRole.USER)
+  @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logOut(@Req() request: RequestWithUser) {
     await this._usersService.removeRefreshToken(request.user.id);
