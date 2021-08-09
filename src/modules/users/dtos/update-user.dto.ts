@@ -33,8 +33,4 @@ export class UpdateUserDto {
   @IsOptional()
   @Length(7, 25)
   readonly password?: string;
-
-  @ApiPropertyOptional({ type: OrganizationDto })
-  @IsOptional()
-  readonly organization?: OrganizationDto;
 }

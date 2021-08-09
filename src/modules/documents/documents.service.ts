@@ -20,7 +20,6 @@ export class DocumentsService {
   ): Promise<DocumentEntity> {
     const newDocument = this._documentsRepository.create({
       creator: user,
-      organization: user.organization,
       ...createDocumentDto,
     });
     await this._documentsRepository.save(newDocument);
@@ -29,8 +28,10 @@ export class DocumentsService {
 
   async getAll(user: UserEntity): Promise<DocumentEntity[]> {
     const documents = await this._documentsRepository.find({
-      creator: user,
-      organization: user.organization,
+      relations: ['creator'],
+      where: {
+        creator: user,
+      },
     });
     return documents;
   }
@@ -40,9 +41,11 @@ export class DocumentsService {
     user: UserEntity,
   ): Promise<DocumentEntity | undefined> {
     const document = await this._documentsRepository.findOne({
-      id,
-      creator: user,
-      organization: user.organization,
+      relations: ['creator'],
+      where: {
+        id,
+        creator: user,
+      },
     });
     if (!document) {
       throw new DocumentNotFoundException();
@@ -56,33 +59,60 @@ export class DocumentsService {
     user: UserEntity,
   ): Promise<DocumentEntity> {
     if (updateDocumentDto.name) {
-      await this._documentsRepository.update(id, {
-        name: updateDocumentDto.name,
-      });
+      await this._documentsRepository.update(
+        {
+          id,
+          creator: user,
+        },
+        {
+          name: updateDocumentDto.name,
+        },
+      );
     }
 
     if (updateDocumentDto.headers) {
-      await this._documentsRepository.update(id, {
-        headers: updateDocumentDto.headers,
-      });
+      await this._documentsRepository.update(
+        {
+          id,
+          creator: user,
+        },
+        {
+          headers: updateDocumentDto.headers,
+        },
+      );
     }
 
     if (updateDocumentDto.description) {
-      await this._documentsRepository.update(id, {
-        description: updateDocumentDto.description,
-      });
+      await this._documentsRepository.update(
+        {
+          id,
+          creator: user,
+        },
+        {
+          description: updateDocumentDto.description,
+        },
+      );
     }
 
     if (updateDocumentDto.expiresAt) {
-      await this._documentsRepository.update(id, {
-        expiresAt: updateDocumentDto.expiresAt,
-      });
+      await this._documentsRepository.update(
+        {
+          id,
+          creator: user,
+        },
+        {
+          expiresAt: updateDocumentDto.expiresAt,
+        },
+      );
     }
 
     return this.getById(id, user);
   }
 
-  async remove(id: number) {
-    await this._documentsRepository.delete(id);
+  async remove(id: number, user: UserEntity) {
+    await this._documentsRepository.delete({
+      id,
+      creator: user,
+    });
   }
 }

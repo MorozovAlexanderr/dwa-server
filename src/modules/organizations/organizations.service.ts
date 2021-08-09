@@ -5,26 +5,33 @@ import { CreateOrganizationDto } from './dtos/create-organization.dto';
 import { UpdateOrganizationDto } from './dtos/update-organization.dto';
 import { OrganizationEntity } from './entities/organization.entity';
 import { OrganizationNotFoundException } from '../../exceptions/organization-not-found.exception';
+import { UserEntity } from '../users/entities/user.entity';
+import { UsersWorkspaceService } from '../users/services/users-workspace.service';
+import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
 
 @Injectable()
 export class OrganizationsService {
   constructor(
     @InjectRepository(OrganizationEntity)
     private readonly _organizationsRepository: Repository<OrganizationEntity>,
+    private readonly _usersWorkspaceService: UsersWorkspaceService,
   ) {}
 
   async create(
     createOrganizationDto: CreateOrganizationDto,
+    user: UserEntity,
   ): Promise<OrganizationEntity> {
-    const newFaculty = await this._organizationsRepository.create(
+    const newOrganization = await this._organizationsRepository.create(
       createOrganizationDto,
     );
-    await this._organizationsRepository.save(newFaculty);
-    return newFaculty;
-  }
+    await this._organizationsRepository.save(newOrganization);
 
-  async getAll(): Promise<OrganizationEntity[]> {
-    return await this._organizationsRepository.find();
+    await this._usersWorkspaceService.create(user, {
+      accessLevel: UserWorkspaceRole.ADMIN,
+      organization: newOrganization,
+    });
+
+    return newOrganization;
   }
 
   async getById(id: number): Promise<OrganizationEntity | undefined> {

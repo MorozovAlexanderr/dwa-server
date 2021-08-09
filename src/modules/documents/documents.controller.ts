@@ -1,20 +1,20 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-  UseInterceptors,
   ClassSerializerInterceptor,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
-  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -22,15 +22,18 @@ import {
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
-import { Auth } from '../../decorators/auth.decorator';
-import { UserRole } from '../../common/enums/roles.enum';
 import { DocumentDto } from './dto/document.dto';
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { UserEntity } from '../users/entities/user.entity';
+import JwtAuthGuard from '../../guards/jwt.-auth.guard';
+import { WorkspaceRolesGuard } from '../../guards/workspace-roles.guard';
+import { WorkspaceRoles } from '../../decorators/workspace-roles.decorator';
+import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
 
 @ApiTags('documents')
 @ApiBearerAuth()
-@Auth(UserRole.ADMIN, UserRole.USER)
+@UseGuards(JwtAuthGuard, WorkspaceRolesGuard)
+@WorkspaceRoles(UserWorkspaceRole.ADMIN, UserWorkspaceRole.MEMBER)
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('documents')
 export class DocumentsController {
@@ -70,9 +73,6 @@ export class DocumentsController {
     status: 200,
     type: DocumentDto,
   })
-  @ApiNotFoundResponse({
-    description: 'Document not found',
-  })
   @Get(':id')
   async getOne(
     @Param('id', ParseIntPipe) id: number,
@@ -85,9 +85,7 @@ export class DocumentsController {
   @ApiOperation({ summary: 'Update document by id' })
   @ApiResponse({
     status: 200,
-  })
-  @ApiNotFoundResponse({
-    description: 'Document not found',
+    type: DocumentDto,
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
@@ -108,11 +106,8 @@ export class DocumentsController {
   @ApiResponse({
     status: 200,
   })
-  @ApiNotFoundResponse({
-    description: 'Document not found',
-  })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this._documentsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number, @AuthUser() user: UserEntity) {
+    return this._documentsService.remove(id, user);
   }
 }

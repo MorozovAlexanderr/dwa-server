@@ -1,10 +1,9 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { UserRole } from '../../../common/enums/roles.enum';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserDto } from '../dtos/user.dto';
 import { DocumentEntity } from '../../documents/entities/document.entity';
 import { Exclude } from 'class-transformer';
-import { OrganizationEntity } from '../../organizations/entities/organization.entity';
+import { UserWorkspaceEntity } from './user-workspace.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -30,20 +29,11 @@ export class UserEntity extends AbstractEntity<UserDto> {
   @Column({ default: true })
   isActive: boolean;
 
-  @ManyToOne(() => OrganizationEntity, (organization) => organization.users, {
-    eager: true,
-  })
-  organization: OrganizationEntity;
+  @OneToOne(() => UserWorkspaceEntity, (userWorkspace) => userWorkspace.user)
+  userWorkspace: UserWorkspaceEntity;
 
   @OneToMany(() => DocumentEntity, (document) => document.creator)
   documents: DocumentEntity[];
-
-  @Column({
-    type: 'enum',
-    enum: UserRole,
-    default: UserRole.USER,
-  })
-  role: UserRole;
 
   dtoClass = UserDto;
 }
