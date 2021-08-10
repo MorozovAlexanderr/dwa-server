@@ -42,8 +42,8 @@ export class AuthController {
   })
   @HttpCode(201)
   @Post('register')
-  async register(@Body() registerData: RegisterUserDto): Promise<UserDto> {
-    const user = await this._authService.register(registerData);
+  async register(@Body() registerUserDto: RegisterUserDto): Promise<UserDto> {
+    const user = await this._usersService.create(registerUserDto);
     return user.toDto();
   }
 
