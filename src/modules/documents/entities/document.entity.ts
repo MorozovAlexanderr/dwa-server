@@ -9,11 +9,8 @@ export class DocumentEntity extends AbstractEntity<DocumentDto> {
   @Column()
   name: string;
 
-  @Column()
-  headers: string;
-
   @Column({ type: 'text' })
-  description: string;
+  content: string;
 
   @Column('simple-array')
   signerIds: number[];

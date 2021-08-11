@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,6 +20,7 @@ export class DocumentsService {
   ): Promise<DocumentEntity> {
     const newDocument = this._documentsRepository.create({
       creator: user,
+      organization: user.userWorkspace.organization,
       ...createDocumentDto,
     });
     await this._documentsRepository.save(newDocument);
@@ -70,26 +71,14 @@ export class DocumentsService {
       );
     }
 
-    if (updateDocumentDto.headers) {
+    if (updateDocumentDto.content) {
       await this._documentsRepository.update(
         {
           id,
           creator: user,
         },
         {
-          headers: updateDocumentDto.headers,
-        },
-      );
-    }
-
-    if (updateDocumentDto.description) {
-      await this._documentsRepository.update(
-        {
-          id,
-          creator: user,
-        },
-        {
-          description: updateDocumentDto.description,
+          content: updateDocumentDto.content,
         },
       );
     }

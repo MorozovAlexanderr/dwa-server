@@ -10,12 +10,7 @@ export class CreateDocumentDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  readonly headers: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  readonly description: string;
+  readonly content: string;
 
   @ApiProperty()
   @IsArray()
