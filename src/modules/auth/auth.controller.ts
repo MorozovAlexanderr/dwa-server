@@ -37,7 +37,6 @@ export class AuthController {
   @ApiOperation({ summary: 'Register user' })
   @ApiBody({ type: RegisterUserDto })
   @ApiCreatedResponse({
-    description: 'Successfully registered',
     type: [UserDto],
   })
   @HttpCode(201)
@@ -46,6 +45,9 @@ export class AuthController {
     const user = await this._usersService.create(registerUserDto);
     return user.toDto();
   }
+
+  // TODO: decompose login and refresh methods logic as it`s related
+  //  to the violation of the DRY principle
 
   @ApiOperation({ summary: 'Auth user' })
   @ApiBody({ type: UserLoginDto })
@@ -75,10 +77,9 @@ export class AuthController {
     return { ...tokens, user: user.toDto() };
   }
 
-  @ApiOperation({ summary: 'Refresh user auth token' })
+  @ApiOperation({ summary: 'Refresh user auth and refresh token' })
   @ApiBearerAuth()
   @ApiResponse({
-    description: 'Return new access auth token',
     status: 200,
     type: LoginPayloadDto,
   })

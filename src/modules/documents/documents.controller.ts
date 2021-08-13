@@ -42,7 +42,6 @@ export class DocumentsController {
   @ApiOperation({ summary: 'Create document' })
   @ApiBody({ type: CreateDocumentDto })
   @ApiCreatedResponse({
-    description: 'Successfully created',
     type: DocumentDto,
   })
   @Post()
