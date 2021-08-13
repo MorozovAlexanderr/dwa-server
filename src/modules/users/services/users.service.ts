@@ -20,6 +20,20 @@ export class UsersService {
     return newUser;
   }
 
+  async getAll(user: UserEntity): Promise<UserEntity[]> {
+    const queryBuilder = this._usersRepository.createQueryBuilder('users');
+    const users = await queryBuilder
+      .leftJoinAndSelect('users.userWorkspace', 'userWorkspace')
+      .where('userWorkspace.organization.id = :orgId', {
+        orgId: user.userWorkspace.organization.id,
+      })
+      .andWhere('users.id != :userId', {
+        userId: user.id,
+      })
+      .getMany();
+    return users;
+  }
+
   async getUser(
     findData: FindConditions<UserEntity>,
   ): Promise<UserEntity | undefined> {

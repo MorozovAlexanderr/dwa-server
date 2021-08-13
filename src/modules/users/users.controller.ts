@@ -30,6 +30,17 @@ export class UsersController {
     return userEntity.toDto();
   }
 
+  @ApiOperation({ summary: 'Get users' })
+  @ApiResponse({
+    status: 200,
+    type: [UserDto],
+  })
+  @Get()
+  async getAll(@AuthUser() user: UserEntity): Promise<UserDto[]> {
+    const users = await this._usersService.getAll(user);
+    return users.map((u) => u.toDto());
+  }
+
   @ApiOperation({ summary: 'Update user' })
   @ApiResponse({
     status: 200,

@@ -36,7 +36,6 @@ export class OrganizationsController {
   @ApiOperation({ summary: 'Create organization' })
   @ApiBody({ type: CreateOrganizationDto })
   @ApiCreatedResponse({
-    description: 'Successfully created',
     type: OrganizationDto,
   })
   @ApiBearerAuth()
