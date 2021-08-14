@@ -34,7 +34,6 @@ import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, WorkspaceRolesGuard)
 @WorkspaceRoles(UserWorkspaceRole.ADMIN, UserWorkspaceRole.MEMBER)
-@UseInterceptors(ClassSerializerInterceptor)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly _documentsService: DocumentsService) {}

@@ -1,7 +1,6 @@
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { UserWorkspaceDto } from '../dtos/user-workspace.dto';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-import { OrganizationDto } from '../../organizations/dtos/organization.dto';
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
 import { UserWorkspaceRole } from '../../../common/enums/workspace-roles.enum';
 import { UserEntity } from './user.entity';
@@ -12,7 +11,7 @@ export class UserWorkspaceEntity extends AbstractEntity<UserWorkspaceDto> {
     () => OrganizationEntity,
     (organization) => organization.userWorkspace,
   )
-  organization: OrganizationDto;
+  organization: OrganizationEntity;
 
   @OneToOne(() => UserEntity, (user) => user.userWorkspace, {
     onDelete: 'CASCADE',
