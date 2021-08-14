@@ -79,6 +79,11 @@ export class UsersController {
     return updatedUser.toDto();
   }
 
+  @ApiOperation({ summary: 'Invite user to organization' })
+  @ApiResponse({
+    status: 200,
+    type: UserInviteDto,
+  })
   @UseGuards(JwtAuthGuard, WorkspaceRolesGuard)
   @WorkspaceRoles(UserWorkspaceRole.ADMIN)
   @Post(':email/invite')
@@ -94,6 +99,10 @@ export class UsersController {
     return userInvite.toDto();
   }
 
+  @ApiOperation({ summary: 'Confirm invite to organization' })
+  @ApiResponse({
+    status: 200,
+  })
   @Get('confirm-invite/:inviteId')
   async confirmInvite(
     @Param('inviteId', ParseIntPipe) inviteId: number,
