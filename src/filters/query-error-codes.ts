@@ -3,5 +3,5 @@ interface IQueryErrorCodes {
 }
 
 export const QueryErrorCodes: IQueryErrorCodes = {
-  ER_DUP_ENTRY: 'error.unique-email',
+  ER_DUP_ENTRY: 'error.unique',
 };

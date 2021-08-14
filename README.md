@@ -20,7 +20,7 @@ npm run start
 
 ## Api documentation
 
-http://localhost:3000/api/
+http://localhost:3000/swagger/
 
 ## Test
 

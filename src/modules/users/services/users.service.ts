@@ -24,7 +24,8 @@ export class UsersService {
     const queryBuilder = this._usersRepository.createQueryBuilder('users');
     const users = await queryBuilder
       .leftJoinAndSelect('users.userWorkspace', 'userWorkspace')
-      .where('userWorkspace.organization.id = :orgId', {
+      .leftJoin('userWorkspace.organization', 'organization')
+      .where('organization.id = :orgId', {
         orgId: user.userWorkspace.organization.id,
       })
       .andWhere('users.id != :userId', {

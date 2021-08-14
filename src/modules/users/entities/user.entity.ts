@@ -4,6 +4,7 @@ import { UserDto } from '../dtos/user.dto';
 import { DocumentEntity } from '../../documents/entities/document.entity';
 import { Exclude } from 'class-transformer';
 import { UserWorkspaceEntity } from './user-workspace.entity';
+import { UserInviteEntity } from './user-invite.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -31,6 +32,9 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @OneToOne(() => UserWorkspaceEntity, (userWorkspace) => userWorkspace.user)
   userWorkspace: UserWorkspaceEntity;
+
+  @OneToOne(() => UserInviteEntity, (userInvite) => userInvite.user)
+  userInvite: UserInviteEntity;
 
   @OneToMany(() => DocumentEntity, (document) => document.creator)
   documents: DocumentEntity[];
