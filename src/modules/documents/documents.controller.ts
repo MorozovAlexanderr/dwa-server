@@ -71,12 +71,12 @@ export class DocumentsController {
     status: 200,
     type: DocumentDto,
   })
-  @Get(':id')
+  @Get(':uuid')
   async getOne(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('uuid') uuid: string,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    const document = await this._documentsService.getById(id, user);
+    const document = await this._documentsService.getDocument(uuid, user);
     return document.toDto();
   }
 
@@ -86,14 +86,14 @@ export class DocumentsController {
     type: DocumentDto,
   })
   @UseInterceptors(ClassSerializerInterceptor)
-  @Patch(':id')
+  @Patch(':uuid')
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('uuid') uuid: string,
     @Body() updateDocumentDto: UpdateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
     const document = await this._documentsService.update(
-      id,
+      uuid,
       updateDocumentDto,
       user,
     );
@@ -104,8 +104,8 @@ export class DocumentsController {
   @ApiResponse({
     status: 200,
   })
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @AuthUser() user: UserEntity) {
-    return this._documentsService.remove(id, user);
+  @Delete(':uuid')
+  remove(@Param('uuid') uuid: string, @AuthUser() user: UserEntity) {
+    return this._documentsService.remove(uuid, user);
   }
 }

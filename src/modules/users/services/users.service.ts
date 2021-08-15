@@ -97,9 +97,9 @@ export class UsersService {
 
   async getUserIfRefreshTokenMatches(
     refreshToken: string,
-    userId: number,
+    uuid: string,
   ): Promise<UserEntity | undefined> {
-    const user = await this.getUser({ id: userId });
+    const user = await this.getUser({ uuid });
 
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,

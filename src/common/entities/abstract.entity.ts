@@ -1,6 +1,8 @@
 import { AbstractDto } from '../dtos/abstract.dto';
 import {
+  Column,
   CreateDateColumn,
+  Generated,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -10,6 +12,10 @@ import { UtilsService } from '../../utils/utils.service';
 export abstract class AbstractEntity<T extends AbstractDto = AbstractDto> {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  @Generated('uuid')
+  uuid: string;
 
   @CreateDateColumn({
     type: 'timestamp',
