@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export abstract class AbstractDto {
   @ApiProperty()
-  readonly id: number;
+  readonly uuid: string;
 
   @ApiProperty()
   readonly createdAt: Date;
@@ -12,7 +12,7 @@ export abstract class AbstractDto {
   readonly updatedAt: Date | null;
 
   constructor(entity: AbstractEntity) {
-    this.id = entity.id;
+    this.uuid = entity.uuid;
     this.createdAt = entity.createdAt;
     this.updatedAt = entity.updatedAt;
   }

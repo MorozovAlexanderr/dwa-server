@@ -29,8 +29,8 @@ export class AuthService {
     return null;
   }
 
-  getJwtAccessToken(userId: number) {
-    const payload: TokenPayload = { userId };
+  getJwtAccessToken(uuid: string) {
+    const payload: TokenPayload = { uuid };
     return this._jwtService.sign(payload, {
       secret: this._configService.get('JWT_ACCESS_TOKEN_SECRET'),
       expiresIn: `${this._configService.get(
@@ -39,8 +39,8 @@ export class AuthService {
     });
   }
 
-  getJwtRefreshToken(userId: number) {
-    const payload: TokenPayload = { userId };
+  getJwtRefreshToken(uuid: string) {
+    const payload: TokenPayload = { uuid };
     return this._jwtService.sign(payload, {
       secret: this._configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: `${this._configService.get(
@@ -55,9 +55,9 @@ export class AuthService {
     )}`;
   }
 
-  generateTokens(userId: number) {
-    const accessToken = this.getJwtAccessToken(userId);
-    const refreshToken = this.getJwtRefreshToken(userId);
+  generateTokens(uuid: string) {
+    const accessToken = this.getJwtAccessToken(uuid);
+    const refreshToken = this.getJwtRefreshToken(uuid);
     return { accessToken, refreshToken };
   }
 

@@ -103,12 +103,12 @@ export class UsersController {
   @ApiResponse({
     status: 200,
   })
-  @Get('confirm-invite/:inviteId')
+  @Get('confirm-invite/:uuid')
   async confirmInvite(
-    @Param('inviteId', ParseIntPipe) inviteId: number,
+    @Param('uuid') uuid: string,
     @Res() res: Response,
   ): Promise<void> {
-    await this._usersInviteService.confirmInvite(inviteId);
+    await this._usersInviteService.confirmInvite(uuid);
     res.redirect(this._configService.get('CLIENT_URL'));
   }
 }

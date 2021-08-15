@@ -56,7 +56,7 @@ export class UsersInviteService {
   async sendInvite(userInvite: UserInviteEntity): Promise<void> {
     const confirmLink = `${this._configService.get(
       'API_URL',
-    )}/users/confirm-invite/${userInvite.id}`;
+    )}/users/confirm-invite/${userInvite.uuid}`;
 
     await this._mailerService.sendMail({
       from: this._configService.get('SMTP_USER'),
@@ -72,8 +72,8 @@ export class UsersInviteService {
     });
   }
 
-  async confirmInvite(inviteId: number): Promise<void> {
-    const invite = await this.getInvite({ id: inviteId });
+  async confirmInvite(uuid: string): Promise<void> {
+    const invite = await this.getInvite({ uuid });
 
     await this._usersWorkspaceService.create(invite.user, {
       organization: invite.organization,

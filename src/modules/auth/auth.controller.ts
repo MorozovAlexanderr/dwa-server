@@ -61,7 +61,7 @@ export class AuthController {
   @Post('login')
   async login(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
     const { user } = request;
-    const tokens = this._authService.generateTokens(user.id);
+    const tokens = this._authService.generateTokens(user.uuid);
 
     const cookie = this._authService.getCookieWithJwtRefreshToken(
       tokens.refreshToken,
@@ -87,7 +87,7 @@ export class AuthController {
   @Get('refresh')
   async refresh(@Req() request: RequestWithUser): Promise<LoginPayloadDto> {
     const { user } = request;
-    const tokens = this._authService.generateTokens(user.id);
+    const tokens = this._authService.generateTokens(user.uuid);
 
     const cookie = this._authService.getCookieWithJwtRefreshToken(
       tokens.refreshToken,

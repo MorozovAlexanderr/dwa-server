@@ -37,14 +37,14 @@ export class DocumentsService {
     return documents;
   }
 
-  async getById(
-    id: number,
+  async getDocument(
+    uuid: string,
     user: UserEntity,
   ): Promise<DocumentEntity | undefined> {
     const document = await this._documentsRepository.findOne({
       relations: ['creator'],
       where: {
-        id,
+        uuid,
         creator: user,
       },
     });
@@ -55,14 +55,14 @@ export class DocumentsService {
   }
 
   async update(
-    id: number,
+    uuid: string,
     updateDocumentDto: UpdateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentEntity> {
     if (updateDocumentDto.name) {
       await this._documentsRepository.update(
         {
-          id,
+          uuid,
           creator: user,
         },
         {
@@ -74,7 +74,7 @@ export class DocumentsService {
     if (updateDocumentDto.content) {
       await this._documentsRepository.update(
         {
-          id,
+          uuid,
           creator: user,
         },
         {
@@ -86,7 +86,7 @@ export class DocumentsService {
     if (updateDocumentDto.expiresAt) {
       await this._documentsRepository.update(
         {
-          id,
+          uuid,
           creator: user,
         },
         {
@@ -95,12 +95,12 @@ export class DocumentsService {
       );
     }
 
-    return this.getById(id, user);
+    return this.getDocument(uuid, user);
   }
 
-  async remove(id: number, user: UserEntity) {
+  async remove(uuid: string, user: UserEntity) {
     await this._documentsRepository.delete({
-      id,
+      uuid,
       creator: user,
     });
   }
