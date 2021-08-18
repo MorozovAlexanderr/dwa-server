@@ -3,24 +3,28 @@ import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DocumentEntity } from './entities/document.entity';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { UserEntity } from '../users/entities/user.entity';
 import { DocumentNotFoundException } from '../../exceptions/document-not-found.exception';
+import { UtilsService } from '../../utils/utils.service';
 
 @Injectable()
 export class DocumentsService {
   constructor(
     @InjectRepository(DocumentEntity)
     private readonly _documentsRepository: Repository<DocumentEntity>,
+    private readonly _connection: Connection,
   ) {}
 
   async create(
+    filePath: string,
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
   ): Promise<DocumentEntity> {
     const newDocument = this._documentsRepository.create({
       creator: user,
       organization: user.userWorkspace.organization,
+      filePath,
       ...createDocumentDto,
     });
     await this._documentsRepository.save(newDocument);
@@ -71,14 +75,14 @@ export class DocumentsService {
       );
     }
 
-    if (updateDocumentDto.content) {
+    if (updateDocumentDto.description) {
       await this._documentsRepository.update(
         {
           uuid,
           creator: user,
         },
         {
-          content: updateDocumentDto.content,
+          description: updateDocumentDto.description,
         },
       );
     }
@@ -98,10 +102,28 @@ export class DocumentsService {
     return this.getDocument(uuid, user);
   }
 
-  async remove(uuid: string, user: UserEntity) {
-    await this._documentsRepository.delete({
-      uuid,
-      creator: user,
-    });
+  // TODO: add exception throwing to catch block
+
+  async remove(uuid: string, user: UserEntity): Promise<void> {
+    const queryRunner = this._connection.createQueryRunner();
+
+    const document = await this.getDocument(uuid, user);
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.delete(DocumentEntity, {
+        id: document.id,
+        creator: user,
+      });
+      await UtilsService.deleteFile(document.filePath);
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

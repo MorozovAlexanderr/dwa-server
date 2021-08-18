@@ -17,7 +17,7 @@ export class UpdateDocumentDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  readonly content?: string;
+  readonly description?: string;
 
   @ApiPropertyOptional()
   @IsDateString()

@@ -34,7 +34,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env.development
-
 ormconfig.json
 ormconfig.example.json
 .env.development.example
+public

@@ -9,7 +9,7 @@ export class DocumentDto extends AbstractDto {
   readonly name: string;
 
   @ApiProperty()
-  readonly content: string;
+  readonly description: string;
 
   @ApiProperty()
   readonly signerIds: number[];
@@ -29,7 +29,7 @@ export class DocumentDto extends AbstractDto {
   constructor(document: DocumentEntity) {
     super(document);
     this.name = document.name;
-    this.content = document.content;
+    this.description = document.description;
     this.signerIds = document.signerIds;
     this.creator = document.creator;
     this.organization = document.organization;

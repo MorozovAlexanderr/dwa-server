@@ -1,4 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import { unlink } from 'fs';
+import { promisify } from 'util';
 
 export class UtilsService {
   /**
@@ -36,5 +38,10 @@ export class UtilsService {
 
   static validateHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
+  }
+
+  static async deleteFile(filePath: string): Promise<void> {
+    const unlinkAsync = promisify(unlink);
+    await unlinkAsync(filePath);
   }
 }
