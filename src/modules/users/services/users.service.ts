@@ -28,9 +28,6 @@ export class UsersService {
       .where('organization.id = :orgId', {
         orgId: user.userWorkspace.organization.id,
       })
-      .andWhere('users.id != :userId', {
-        userId: user.id,
-      })
       .getMany();
     return users;
   }

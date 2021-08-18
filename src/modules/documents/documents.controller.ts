@@ -5,16 +5,19 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
+  Res,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -29,6 +32,8 @@ import JwtAuthGuard from '../../guards/jwt.-auth.guard';
 import { WorkspaceRolesGuard } from '../../guards/workspace-roles.guard';
 import { WorkspaceRoles } from '../../decorators/workspace-roles.decorator';
 import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { saveDocumentToStorage } from '../../utils/file-uploading';
 
 @ApiTags('documents')
 @ApiBearerAuth()
@@ -38,17 +43,37 @@ import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
 export class DocumentsController {
   constructor(private readonly _documentsService: DocumentsService) {}
 
-  @ApiOperation({ summary: 'Create document' })
-  @ApiBody({ type: CreateDocumentDto })
+  // TODO: fix the swagger api body description
+
+  @ApiOperation({ summary: 'Upload and create document' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        description: { type: 'string' },
+        signerIds: { type: 'array' },
+        expiresAt: { type: 'string' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @ApiCreatedResponse({
     type: DocumentDto,
   })
+  @UseInterceptors(FileInterceptor('file', saveDocumentToStorage))
   @Post()
   async create(
+    @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
     const document = await this._documentsService.create(
+      file.path,
       createDocumentDto,
       user,
     );
@@ -66,18 +91,26 @@ export class DocumentsController {
     return documents.map((d) => d.toDto());
   }
 
-  @ApiOperation({ summary: 'Get document by id' })
-  @ApiResponse({
-    status: 200,
-    type: DocumentDto,
+  @ApiOperation({ summary: 'Get document file by id' })
+  @ApiOkResponse({
+    schema: {
+      type: 'file',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
   })
   @Get(':uuid')
   async getOne(
     @Param('uuid') uuid: string,
     @AuthUser() user: UserEntity,
-  ): Promise<DocumentDto> {
+    @Res() res,
+  ): Promise<void> {
     const document = await this._documentsService.getDocument(uuid, user);
-    return document.toDto();
+    res.sendfile(document.filePath, { root: './' });
   }
 
   @ApiOperation({ summary: 'Update document by id' })
