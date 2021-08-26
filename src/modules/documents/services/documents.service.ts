@@ -56,7 +56,7 @@ export class DocumentsService {
     uuid: string,
     user: UserEntity,
     status: SignatureStatus,
-  ) {
+  ): Promise<DocumentEntity> {
     const document = await this.getDocument({ uuid });
 
     const signature = await this._documentsSignaturesService.getDocumentSignature(
@@ -72,6 +72,8 @@ export class DocumentsService {
       signature,
       status,
     );
+
+    return this.getDocument({ uuid });
   }
 
   async getCreatedDocuments(user: UserEntity): Promise<DocumentEntity[]> {
@@ -109,7 +111,7 @@ export class DocumentsService {
     uuid: string,
   ): Promise<DocumentSignatureEntity[] | undefined> {
     const document = await this.getDocument({ uuid });
-    const signatures = await this._documentsSignaturesService.getDocumentSignatures(
+    const signatures = await this._documentsSignaturesService.getAllDocumentSignatures(
       document,
     );
 
