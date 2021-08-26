@@ -5,6 +5,7 @@ import { DocumentEntity } from '../../documents/entities/document.entity';
 import { Exclude } from 'class-transformer';
 import { UserWorkspaceEntity } from './user-workspace.entity';
 import { UserInviteEntity } from './user-invite.entity';
+import { DocumentSignatureEntity } from '../../documents/entities/document-signature.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -38,6 +39,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
   @OneToMany(() => DocumentEntity, (document) => document.creator)
   documents: DocumentEntity[];
+
+  @OneToMany(
+    () => DocumentSignatureEntity,
+    (documentSignature) => documentSignature.signer,
+  )
+  documentSignatures: DocumentSignatureEntity[];
 
   dtoClass = UserDto;
 }
