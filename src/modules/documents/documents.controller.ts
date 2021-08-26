@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -22,7 +23,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { DocumentsService } from './documents.service';
+import { DocumentsService } from './services/documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { DocumentDto } from './dto/document.dto';
@@ -34,6 +35,10 @@ import { WorkspaceRoles } from '../../decorators/workspace-roles.decorator';
 import { UserWorkspaceRole } from '../../common/enums/workspace-roles.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { saveDocumentToStorage } from '../../utils/file-uploading';
+import { SignatureStatus } from './enums/signature-statuses.enum';
+import { DocStatusQueryParamPipe } from '../../pipes/doc-status-query-param.pipe';
+import { DocumentSignatureDto } from './dto/document-signature.dto';
+import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 
 @ApiTags('documents')
 @ApiBearerAuth()
@@ -53,7 +58,12 @@ export class DocumentsController {
       properties: {
         name: { type: 'string' },
         description: { type: 'string' },
-        signerIds: { type: 'array' },
+        signerIds: {
+          type: 'array',
+          items: {
+            type: 'string',
+          },
+        },
         expiresAt: { type: 'string' },
         file: {
           type: 'string',
@@ -67,12 +77,12 @@ export class DocumentsController {
   })
   @UseInterceptors(FileInterceptor('file', saveDocumentToStorage))
   @Post()
-  async create(
+  async createDocument(
     @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    const document = await this._documentsService.create(
+    const document = await this._documentsService.createDocument(
       file.path,
       createDocumentDto,
       user,
@@ -80,15 +90,47 @@ export class DocumentsController {
     return document.toDto();
   }
 
-  @ApiOperation({ summary: 'Get all documents' })
+  @ApiOperation({ summary: 'Process document' })
+  @ApiOkResponse()
+  @ApiImplicitQuery({ name: 'status', required: true, enum: SignatureStatus })
+  @Post(':uuid/process')
+  async processDocument(
+    @Param('uuid') uuid: string,
+    @Query('status', new DocStatusQueryParamPipe())
+    status: SignatureStatus,
+    @AuthUser() user: UserEntity,
+  ) {
+    await this._documentsService.processDocument(uuid, user, status);
+  }
+
+  @ApiOperation({ summary: 'Get created documents' })
   @ApiResponse({
     status: 200,
     type: [DocumentDto],
   })
-  @Get()
-  async getAll(@AuthUser() user: UserEntity): Promise<DocumentDto[]> {
-    const documents = await this._documentsService.getAll(user);
-    return documents.map((d) => d.toDto());
+  @Get('created')
+  async getUserCreatedDocuments(
+    @AuthUser() user: UserEntity,
+  ): Promise<DocumentDto[]> {
+    const createdDocuments = await this._documentsService.getCreatedDocuments(
+      user,
+    );
+    return createdDocuments.map((d) => d.toDto());
+  }
+
+  @ApiOperation({ summary: 'Get signing documents' })
+  @ApiResponse({
+    status: 200,
+    type: [DocumentDto],
+  })
+  @Get('signing')
+  async getUserSigningDocuments(
+    @AuthUser() user: UserEntity,
+  ): Promise<DocumentDto[]> {
+    const signingDocuments = await this._documentsService.getSigningDocuments(
+      user,
+    );
+    return signingDocuments.map((d) => d.toDto());
   }
 
   @ApiOperation({ summary: 'Get document file by id' })
@@ -104,13 +146,33 @@ export class DocumentsController {
     },
   })
   @Get(':uuid')
-  async getOne(
+  async getDocument(
     @Param('uuid') uuid: string,
     @AuthUser() user: UserEntity,
     @Res() res,
   ): Promise<void> {
-    const document = await this._documentsService.getDocument(uuid, user);
+    const document = await this._documentsService.getDocument({
+      uuid,
+      creator: user,
+    });
     res.sendfile(document.filePath, { root: './' });
+  }
+
+  @ApiOperation({ summary: 'Get document signatures' })
+  @ApiResponse({
+    status: 200,
+    type: [DocumentSignatureDto],
+  })
+  @Get(':uuid/signatures')
+  async getDocumentSignatures(
+    @Param('uuid') uuid: string,
+    @AuthUser() user: UserEntity,
+  ): Promise<DocumentSignatureDto[]> {
+    const documentSignatures = await this._documentsService.getDocumentSignatures(
+      user,
+      uuid,
+    );
+    return documentSignatures.map((s) => s.toDto());
   }
 
   @ApiOperation({ summary: 'Update document by id' })
@@ -120,12 +182,12 @@ export class DocumentsController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':uuid')
-  async update(
+  async updateUserDocument(
     @Param('uuid') uuid: string,
     @Body() updateDocumentDto: UpdateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    const document = await this._documentsService.update(
+    const document = await this._documentsService.updateDocument(
       uuid,
       updateDocumentDto,
       user,
@@ -138,7 +200,7 @@ export class DocumentsController {
     status: 200,
   })
   @Delete(':uuid')
-  remove(@Param('uuid') uuid: string, @AuthUser() user: UserEntity) {
-    return this._documentsService.remove(uuid, user);
+  deleteDocument(@Param('uuid') uuid: string, @AuthUser() user: UserEntity) {
+    return this._documentsService.removeDocument(uuid, user);
   }
 }

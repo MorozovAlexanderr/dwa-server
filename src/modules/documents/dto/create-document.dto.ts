@@ -1,5 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDateString, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateDocumentDto {
   @ApiProperty()
@@ -7,15 +13,16 @@ export class CreateDocumentDto {
   @IsNotEmpty()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  readonly description: string;
+  readonly description?: string;
 
   @ApiProperty()
   @IsArray()
   @IsNotEmpty()
-  readonly signerIds: number[];
+  readonly signerIds: string[];
 
   @ApiProperty()
   @IsDateString()

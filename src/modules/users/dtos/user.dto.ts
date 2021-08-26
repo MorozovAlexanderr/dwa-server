@@ -1,8 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AbstractDto } from '../../../common/dtos/abstract.dto';
-import { UserRole } from '../../../common/enums/roles.enum';
 import { UserEntity } from '../entities/user.entity';
-import { OrganizationDto } from '../../organizations/dtos/organization.dto';
 import { UserWorkspaceDto } from './user-workspace.dto';
 import { IsOptional } from 'class-validator';
 

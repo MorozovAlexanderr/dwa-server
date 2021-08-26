@@ -1,8 +1,15 @@
 import { AbstractEntity } from '../../../common/entities/abstract.entity';
 import { DocumentDto } from '../dto/document.dto';
-import { Column, CreateDateColumn, Entity, ManyToOne } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import { OrganizationEntity } from '../../organizations/entities/organization.entity';
+import { DocumentSignatureEntity } from './document-signature.entity';
 
 @Entity({ name: 'documents' })
 export class DocumentEntity extends AbstractEntity<DocumentDto> {
@@ -12,17 +19,22 @@ export class DocumentEntity extends AbstractEntity<DocumentDto> {
   @Column()
   filePath: string;
 
-  @Column()
-  description: string;
-
-  @Column('simple-array')
-  signerIds: number[];
+  @Column({
+    nullable: true,
+  })
+  description?: string;
 
   @ManyToOne(() => UserEntity, (creator) => creator.documents)
   creator: UserEntity;
 
   @ManyToOne(() => OrganizationEntity, (organization) => organization.documents)
   organization: OrganizationEntity;
+
+  @OneToMany(
+    () => DocumentSignatureEntity,
+    (documentSignatures) => documentSignatures.document,
+  )
+  documentSignatures: DocumentSignatureEntity[];
 
   @Column({ default: false })
   isReady: boolean;
