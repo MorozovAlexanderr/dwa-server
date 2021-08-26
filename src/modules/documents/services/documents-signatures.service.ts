@@ -27,7 +27,9 @@ export class DocumentsSignaturesService {
     return newDocumentSignature;
   }
 
-  async getUserSignaturesToMapDocuments(user: UserEntity) {
+  async getUserSignaturesToMapDocuments(
+    user: UserEntity,
+  ): Promise<DocumentSignatureEntity[]> {
     const signatures = await this._documentsSignaturesRepository.find({
       relations: ['document', 'document.creator'],
       where: { signer: user },
@@ -35,7 +37,7 @@ export class DocumentsSignaturesService {
     return signatures;
   }
 
-  async getDocumentSignatures(
+  async getAllDocumentSignatures(
     document: DocumentEntity,
   ): Promise<DocumentSignatureEntity[]> {
     const signatures = await this._documentsSignaturesRepository.find({
@@ -47,7 +49,7 @@ export class DocumentsSignaturesService {
 
   async getDocumentSignature(
     findData: FindConditions<DocumentSignatureEntity>,
-  ) {
+  ): Promise<DocumentSignatureEntity> {
     const signature = await this._documentsSignaturesRepository.findOne({
       where: findData,
       relations: ['document', 'signer'],

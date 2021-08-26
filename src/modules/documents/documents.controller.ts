@@ -91,16 +91,24 @@ export class DocumentsController {
   }
 
   @ApiOperation({ summary: 'Process document' })
-  @ApiOkResponse()
+  @ApiResponse({
+    status: 200,
+    type: DocumentDto,
+  })
   @ApiImplicitQuery({ name: 'status', required: true, enum: SignatureStatus })
-  @Post(':uuid/process')
+  @Patch(':uuid/process')
   async processDocument(
     @Param('uuid') uuid: string,
     @Query('status', new DocStatusQueryParamPipe())
     status: SignatureStatus,
     @AuthUser() user: UserEntity,
-  ) {
-    await this._documentsService.processDocument(uuid, user, status);
+  ): Promise<DocumentDto> {
+    const document = await this._documentsService.processDocument(
+      uuid,
+      user,
+      status,
+    );
+    return document.toDto();
   }
 
   @ApiOperation({ summary: 'Get created documents' })
