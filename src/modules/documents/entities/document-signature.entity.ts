@@ -7,7 +7,9 @@ import { SignatureStatus } from '../enums/signature-statuses.enum';
 
 @Entity('documents_signatures')
 export class DocumentSignatureEntity extends AbstractEntity<DocumentSignatureDto> {
-  @ManyToOne(() => DocumentEntity, (document) => document.documentSignatures)
+  @ManyToOne(() => DocumentEntity, (document) => document.documentSignatures, {
+    onDelete: 'CASCADE',
+  })
   document: DocumentEntity;
 
   @ManyToOne(() => UserEntity, (signer) => signer.documentSignatures)
