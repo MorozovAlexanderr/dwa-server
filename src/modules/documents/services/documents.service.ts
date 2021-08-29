@@ -11,7 +11,6 @@ import { DocumentsSignaturesService } from './documents-signatures.service';
 import { SignatureStatus } from '../enums/signature-statuses.enum';
 import { UsersService } from '../../users/services/users.service';
 import { DocumentSignatureEntity } from '../entities/document-signature.entity';
-import { SignaturesForbiddenException } from '../../../exceptions/signatures-forbidden.exception';
 
 @Injectable()
 export class DocumentsService {
@@ -106,10 +105,10 @@ export class DocumentsService {
     return document;
   }
 
-  async getDocumentSignatures(
+  async isUserHasAccessToDocument(
     user: UserEntity,
     uuid: string,
-  ): Promise<DocumentSignatureEntity[] | undefined> {
+  ): Promise<boolean> {
     const document = await this.getDocument({ uuid });
     const signatures = await this._documentsSignaturesService.getAllDocumentSignatures(
       document,
@@ -117,9 +116,16 @@ export class DocumentsService {
 
     const isSigner = signatures.some((s) => s.signer.id === user.id);
 
-    if (document.creator.id !== user.id && !isSigner) {
-      throw new SignaturesForbiddenException();
-    }
+    return document.creator.id === user.id || isSigner;
+  }
+
+  async getDocumentSignatures(
+    uuid: string,
+  ): Promise<DocumentSignatureEntity[] | undefined> {
+    const document = await this.getDocument({ uuid });
+    const signatures = await this._documentsSignaturesService.getAllDocumentSignatures(
+      document,
+    );
 
     return signatures;
   }

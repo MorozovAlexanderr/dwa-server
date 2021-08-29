@@ -39,6 +39,7 @@ import { SignatureStatus } from './enums/signature-statuses.enum';
 import { DocStatusQueryParamPipe } from '../../pipes/doc-status-query-param.pipe';
 import { DocumentSignatureDto } from './dto/document-signature.dto';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import { DocumentAccessGuard } from './guards/document-access.guard';
 
 @ApiTags('documents')
 @ApiBearerAuth()
@@ -141,6 +142,8 @@ export class DocumentsController {
     return signingDocuments.map((d) => d.toDto());
   }
 
+  // TODO: get file for signing user
+
   @ApiOperation({ summary: 'Get document file by id' })
   @ApiOkResponse({
     schema: {
@@ -153,15 +156,11 @@ export class DocumentsController {
       },
     },
   })
+  @UseGuards(DocumentAccessGuard)
   @Get(':uuid')
-  async getDocument(
-    @Param('uuid') uuid: string,
-    @AuthUser() user: UserEntity,
-    @Res() res,
-  ): Promise<void> {
+  async getDocument(@Param('uuid') uuid: string, @Res() res): Promise<void> {
     const document = await this._documentsService.getDocument({
       uuid,
-      creator: user,
     });
     res.sendfile(document.filePath, { root: './' });
   }
@@ -171,13 +170,12 @@ export class DocumentsController {
     status: 200,
     type: [DocumentSignatureDto],
   })
+  @UseGuards(DocumentAccessGuard)
   @Get(':uuid/signatures')
   async getDocumentSignatures(
     @Param('uuid') uuid: string,
-    @AuthUser() user: UserEntity,
   ): Promise<DocumentSignatureDto[]> {
     const documentSignatures = await this._documentsService.getDocumentSignatures(
-      user,
       uuid,
     );
     return documentSignatures.map((s) => s.toDto());
