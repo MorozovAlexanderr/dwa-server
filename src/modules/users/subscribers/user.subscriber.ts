@@ -6,6 +6,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { UtilsService } from '../../../utils/utils.service';
+import { AvatarColor } from '../enums/avatar-colors.enum';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
@@ -19,5 +20,8 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
 
   beforeInsert(event: InsertEvent<UserEntity>): void {
     event.entity.password = UtilsService.generateHash(event.entity.password);
+    event.entity.avatarColor = UtilsService.getRandomEnumValue(
+      AvatarColor,
+    ) as AvatarColor;
   }
 }

@@ -6,6 +6,7 @@ import { Exclude } from 'class-transformer';
 import { UserWorkspaceEntity } from './user-workspace.entity';
 import { UserInviteEntity } from './user-invite.entity';
 import { DocumentSignatureEntity } from '../../documents/entities/document-signature.entity';
+import { AvatarColor } from '../enums/avatar-colors.enum';
 
 @Entity({ name: 'users' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -26,7 +27,10 @@ export class UserEntity extends AbstractEntity<UserDto> {
     nullable: true,
   })
   @Exclude()
-  public currentHashedRefreshToken?: string;
+  currentHashedRefreshToken?: string;
+
+  @Column({ type: 'enum', enum: AvatarColor, nullable: false })
+  avatarColor: AvatarColor;
 
   @Column({ default: true })
   isActive: boolean;

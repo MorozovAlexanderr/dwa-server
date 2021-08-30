@@ -44,4 +44,10 @@ export class UtilsService {
     const unlinkAsync = promisify(unlink);
     await unlinkAsync(filePath);
   }
+
+  static getRandomEnumValue(e: { [k: number]: string }): string | number {
+    const keys = Object.keys(e);
+    const enumKey = keys[Math.floor(Math.random() * keys.length)];
+    return e[enumKey];
+  }
 }
