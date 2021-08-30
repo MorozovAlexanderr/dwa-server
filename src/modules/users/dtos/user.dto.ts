@@ -3,6 +3,7 @@ import { AbstractDto } from '../../../common/dtos/abstract.dto';
 import { UserEntity } from '../entities/user.entity';
 import { UserWorkspaceDto } from './user-workspace.dto';
 import { IsOptional } from 'class-validator';
+import { AvatarColor } from '../enums/avatar-colors.enum';
 
 export class UserDto extends AbstractDto {
   @ApiProperty()
@@ -18,6 +19,9 @@ export class UserDto extends AbstractDto {
   @IsOptional()
   readonly userWorkspace?: UserWorkspaceDto;
 
+  @ApiProperty({ enum: AvatarColor })
+  readonly avatarColor: AvatarColor;
+
   @ApiProperty()
   readonly isActive: boolean;
 
@@ -27,6 +31,7 @@ export class UserDto extends AbstractDto {
     this.secondName = user.secondName;
     this.email = user.email;
     this.userWorkspace = user.userWorkspace?.toDto();
+    this.avatarColor = user.avatarColor;
     this.isActive = user.isActive;
   }
 }
