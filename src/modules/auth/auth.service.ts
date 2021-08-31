@@ -21,7 +21,10 @@ export class AuthService {
   ): Promise<UserEntity | null> {
     const user = await this._usersService.getUser({ email });
 
-    const isMatchPass = UtilsService.validateHash(password, user.password);
+    const isMatchPass = await UtilsService.validateHash(
+      password,
+      user.password,
+    );
 
     if (user && isMatchPass) {
       return user;
