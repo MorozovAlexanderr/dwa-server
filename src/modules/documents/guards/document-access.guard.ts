@@ -16,11 +16,11 @@ export class DocumentAccessGuard implements CanActivate {
     const { user } = request;
     const params = request.params;
 
-    const isAccess = await this._documentsService.isUserHasAccessToDocument(
+    const isAccessible = await this._documentsService.isDocumentAccessibleToUser(
       user,
       params.uuid,
     );
 
-    return isAccess;
+    return isAccessible;
   }
 }

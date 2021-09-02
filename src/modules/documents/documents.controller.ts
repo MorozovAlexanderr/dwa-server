@@ -49,37 +49,18 @@ import { DocumentAccessGuard } from './guards/document-access.guard';
 export class DocumentsController {
   constructor(private readonly _documentsService: DocumentsService) {}
 
-  // TODO: fix the swagger api body description
+  // TODO: file must not be save if dto validation fails
 
   @ApiOperation({ summary: 'Upload and create document' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        description: { type: 'string' },
-        signerIds: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-        },
-        expiresAt: { type: 'string' },
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
+  @ApiBody({ type: CreateDocumentDto })
   @ApiCreatedResponse({
     type: DocumentDto,
   })
   @UseInterceptors(FileInterceptor('file', saveDocumentToStorage))
   @Post()
   async createDocument(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile('file') file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
@@ -97,6 +78,7 @@ export class DocumentsController {
     type: DocumentDto,
   })
   @ApiImplicitQuery({ name: 'status', required: true, enum: SignatureStatus })
+  @UseGuards(DocumentAccessGuard)
   @Patch(':uuid/process')
   async processDocument(
     @Param('uuid') uuid: string,
@@ -142,8 +124,6 @@ export class DocumentsController {
     return signingDocuments.map((d) => d.toDto());
   }
 
-  // TODO: get file for signing user
-
   @ApiOperation({ summary: 'Get document file by id' })
   @ApiOkResponse({
     schema: {
@@ -188,12 +168,12 @@ export class DocumentsController {
   })
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':uuid')
-  async updateUserDocument(
+  async setDocumentData(
     @Param('uuid') uuid: string,
     @Body() updateDocumentDto: UpdateDocumentDto,
     @AuthUser() user: UserEntity,
   ): Promise<DocumentDto> {
-    const document = await this._documentsService.updateDocument(
+    const document = await this._documentsService.updateDocumentData(
       uuid,
       updateDocumentDto,
       user,

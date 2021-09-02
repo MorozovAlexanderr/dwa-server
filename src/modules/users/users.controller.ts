@@ -60,8 +60,8 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, WorkspaceRolesGuard)
   @WorkspaceRoles(UserWorkspaceRole.ADMIN, UserWorkspaceRole.MEMBER)
   @Get()
-  async getAll(@AuthUser() user: UserEntity): Promise<UserDto[]> {
-    const users = await this._usersService.getAll(user);
+  async getAllUsers(@AuthUser() user: UserEntity): Promise<UserDto[]> {
+    const users = await this._usersService.getAllUsers(user);
     return users.map((u) => u.toDto());
   }
 
@@ -75,7 +75,10 @@ export class UsersController {
     @AuthUser() user: UserEntity,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserDto> {
-    const updatedUser = await this._usersService.update(user, updateUserDto);
+    const updatedUser = await this._usersService.updateUserData(
+      user,
+      updateUserDto,
+    );
     return updatedUser.toDto();
   }
 

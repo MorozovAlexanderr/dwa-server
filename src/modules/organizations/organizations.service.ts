@@ -17,7 +17,7 @@ export class OrganizationsService {
     private readonly _usersWorkspaceService: UsersWorkspaceService,
   ) {}
 
-  async create(
+  public async createOrganization(
     createOrganizationDto: CreateOrganizationDto,
     user: UserEntity,
   ): Promise<OrganizationEntity> {
@@ -26,7 +26,7 @@ export class OrganizationsService {
     );
     await this._organizationsRepository.save(newOrganization);
 
-    await this._usersWorkspaceService.create(user, {
+    await this._usersWorkspaceService.createWorkspace(user, {
       accessLevel: UserWorkspaceRole.ADMIN,
       organization: newOrganization,
     });
@@ -34,7 +34,9 @@ export class OrganizationsService {
     return newOrganization;
   }
 
-  async getById(id: number): Promise<OrganizationEntity | undefined> {
+  public async getOrganizationById(
+    id: number,
+  ): Promise<OrganizationEntity | undefined> {
     const organization = await this._organizationsRepository.findOne(id);
     if (!organization) {
       throw new OrganizationNotFoundException();
@@ -42,7 +44,7 @@ export class OrganizationsService {
     return organization;
   }
 
-  async update(
+  public async updateOrganizationData(
     id: number,
     updateOrganizationDto: UpdateOrganizationDto,
   ): Promise<OrganizationEntity> {
@@ -52,10 +54,6 @@ export class OrganizationsService {
       });
     }
 
-    return this.getById(id);
-  }
-
-  async remove(id: number) {
-    await this._organizationsRepository.delete(id);
+    return this.getOrganizationById(id);
   }
 }

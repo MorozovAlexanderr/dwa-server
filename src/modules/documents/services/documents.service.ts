@@ -11,6 +11,7 @@ import { DocumentsSignaturesService } from './documents-signatures.service';
 import { SignatureStatus } from '../enums/signature-statuses.enum';
 import { UsersService } from '../../users/services/users.service';
 import { DocumentSignatureEntity } from '../entities/document-signature.entity';
+import { DocumentDeletionFailedException } from '../../../exceptions/document-deletion-failed.exception';
 
 @Injectable()
 export class DocumentsService {
@@ -22,7 +23,7 @@ export class DocumentsService {
     private readonly _connection: Connection,
   ) {}
 
-  async createDocument(
+  public async createDocument(
     filePath: string,
     createDocumentDto: CreateDocumentDto,
     user: UserEntity,
@@ -51,7 +52,7 @@ export class DocumentsService {
     return newDocument;
   }
 
-  async processDocument(
+  public async processDocument(
     uuid: string,
     user: UserEntity,
     status: SignatureStatus,
@@ -75,7 +76,9 @@ export class DocumentsService {
     return this.getDocument({ uuid });
   }
 
-  async getCreatedDocuments(user: UserEntity): Promise<DocumentEntity[]> {
+  public async getCreatedDocuments(
+    user: UserEntity,
+  ): Promise<DocumentEntity[]> {
     const documents = await this._documentsRepository.find({
       relations: ['creator'],
       where: {
@@ -85,14 +88,16 @@ export class DocumentsService {
     return documents;
   }
 
-  async getSigningDocuments(user: UserEntity): Promise<DocumentEntity[]> {
+  public async getSigningDocuments(
+    user: UserEntity,
+  ): Promise<DocumentEntity[]> {
     const signatures = await this._documentsSignaturesService.getUserSignaturesToMapDocuments(
       user,
     );
     return signatures.map((s) => s.document);
   }
 
-  async getDocument(
+  public async getDocument(
     findData: FindConditions<DocumentEntity>,
   ): Promise<DocumentEntity | undefined> {
     const document = await this._documentsRepository.findOne({
@@ -105,7 +110,7 @@ export class DocumentsService {
     return document;
   }
 
-  async isUserHasAccessToDocument(
+  public async isDocumentAccessibleToUser(
     user: UserEntity,
     uuid: string,
   ): Promise<boolean> {
@@ -119,7 +124,7 @@ export class DocumentsService {
     return document.creator.id === user.id || isSigner;
   }
 
-  async getDocumentSignatures(
+  public async getDocumentSignatures(
     uuid: string,
   ): Promise<DocumentSignatureEntity[] | undefined> {
     const document = await this.getDocument({ uuid });
@@ -130,11 +135,11 @@ export class DocumentsService {
     return signatures;
   }
 
-  async setDocFinishedStatus(document: DocumentEntity) {
+  public async setDocFinishedStatus(document: DocumentEntity) {
     await this._documentsRepository.update(document.id, { isReady: true });
   }
 
-  async updateDocument(
+  public async updateDocumentData(
     uuid: string,
     updateDocumentDto: UpdateDocumentDto,
     user: UserEntity,
@@ -178,9 +183,7 @@ export class DocumentsService {
     return this.getDocument({ uuid, creator: user });
   }
 
-  // TODO: add exception throwing to catch block
-
-  async removeDocument(uuid: string, user: UserEntity): Promise<void> {
+  public async removeDocument(uuid: string, user: UserEntity): Promise<void> {
     const queryRunner = this._connection.createQueryRunner();
 
     const document = await this.getDocument({ uuid, creator: user });
@@ -198,6 +201,7 @@ export class DocumentsService {
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
+      throw new DocumentDeletionFailedException(error.message);
     } finally {
       await queryRunner.release();
     }

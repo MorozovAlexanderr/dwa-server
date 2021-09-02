@@ -40,11 +40,11 @@ export class OrganizationsController {
   })
   @ApiBearerAuth()
   @Post()
-  async create(
+  async createOrganization(
     @Body() createOrganizationDto: CreateOrganizationDto,
     @AuthUser() user: UserEntity,
   ): Promise<OrganizationDto> {
-    const organization = await this._organizationsService.create(
+    const organization = await this._organizationsService.createOrganization(
       createOrganizationDto,
       user,
     );
@@ -60,29 +60,14 @@ export class OrganizationsController {
   @UseGuards(WorkspaceRolesGuard)
   @WorkspaceRoles(UserWorkspaceRole.ADMIN)
   @Patch('update-current')
-  async update(
+  async setOrganizationData(
     @Body() updateOrganizationDto: UpdateOrganizationDto,
     @AuthUser() user: UserEntity,
   ): Promise<OrganizationDto> {
-    const organization = await this._organizationsService.update(
+    const organization = await this._organizationsService.updateOrganizationData(
       user.userWorkspace.id,
       updateOrganizationDto,
     );
     return organization.toDto();
-  }
-
-  @ApiOperation({ summary: 'Delete organization' })
-  @ApiResponse({
-    status: 200,
-  })
-  @ApiForbiddenResponse({
-    description: 'Forbidden resource',
-  })
-  @ApiBearerAuth()
-  @UseGuards(WorkspaceRolesGuard)
-  @WorkspaceRoles(UserWorkspaceRole.ADMIN)
-  @Delete('delete-current')
-  remove(@AuthUser() user: UserEntity) {
-    return this._organizationsService.remove(user.userWorkspace.id);
   }
 }

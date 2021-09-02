@@ -42,7 +42,7 @@ export class AuthController {
   @HttpCode(201)
   @Post('register')
   async register(@Body() registerUserDto: RegisterUserDto): Promise<UserDto> {
-    const user = await this._usersService.create(registerUserDto);
+    const user = await this._usersService.createUser(registerUserDto);
     return user.toDto();
   }
 

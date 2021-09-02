@@ -12,7 +12,7 @@ export class UsersWorkspaceService {
     private readonly _usersWorkspaceRepository: Repository<UserWorkspaceEntity>,
   ) {}
 
-  async create(
+  public async createWorkspace(
     user: UserEntity,
     createUserWorkspaceDto: CreateUserWorkspaceDto,
   ): Promise<UserWorkspaceEntity> {
