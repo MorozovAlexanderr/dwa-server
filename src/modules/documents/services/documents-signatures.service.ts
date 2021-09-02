@@ -14,7 +14,7 @@ export class DocumentsSignaturesService {
     private readonly _documentsSignaturesRepository: Repository<DocumentSignatureEntity>,
   ) {}
 
-  async createSignature(
+  public async createSignature(
     document: DocumentEntity,
     signer: UserEntity,
   ): Promise<DocumentSignatureEntity> {
@@ -27,7 +27,7 @@ export class DocumentsSignaturesService {
     return newDocumentSignature;
   }
 
-  async getUserSignaturesToMapDocuments(
+  public async getUserSignaturesToMapDocuments(
     user: UserEntity,
   ): Promise<DocumentSignatureEntity[]> {
     const signatures = await this._documentsSignaturesRepository.find({
@@ -37,7 +37,7 @@ export class DocumentsSignaturesService {
     return signatures;
   }
 
-  async getAllDocumentSignatures(
+  public async getAllDocumentSignatures(
     document: DocumentEntity,
   ): Promise<DocumentSignatureEntity[]> {
     const signatures = await this._documentsSignaturesRepository.find({
@@ -47,7 +47,7 @@ export class DocumentsSignaturesService {
     return signatures;
   }
 
-  async getDocumentSignature(
+  public async getDocumentSignature(
     findData: FindConditions<DocumentSignatureEntity>,
   ): Promise<DocumentSignatureEntity> {
     const signature = await this._documentsSignaturesRepository.findOne({
@@ -64,7 +64,7 @@ export class DocumentsSignaturesService {
 
   // This update implementation is related to getting the entire entity
   // in event subscriber
-  async updateSignatureStatus(
+  public async updateSignatureStatus(
     signature: DocumentSignatureEntity,
     status: SignatureStatus,
   ) {
@@ -74,7 +74,7 @@ export class DocumentsSignaturesService {
     await this._documentsSignaturesRepository.save(signature);
   }
 
-  async areAllSignaturesCompleted(
+  public async areAllSignaturesCompleted(
     completedSignature: DocumentSignatureEntity,
     document: DocumentEntity,
   ): Promise<boolean> {
@@ -93,7 +93,7 @@ export class DocumentsSignaturesService {
     return !incompleteSignaturesNumber;
   }
 
-  isAvailableToInteract(signature: DocumentSignatureEntity) {
+  public isAvailableToInteract(signature: DocumentSignatureEntity) {
     if (signature.isCompleted) {
       throw new SignatureAlreadyCompletedException();
     }

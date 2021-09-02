@@ -14,13 +14,15 @@ export class UsersService {
     private readonly _usersRepository: Repository<UserEntity>,
   ) {}
 
-  async create(registerUserDto: RegisterUserDto): Promise<UserEntity> {
+  public async createUser(
+    registerUserDto: RegisterUserDto,
+  ): Promise<UserEntity> {
     const newUser = this._usersRepository.create(registerUserDto);
     await this._usersRepository.save(newUser);
     return newUser;
   }
 
-  async getAll(user: UserEntity): Promise<UserEntity[]> {
+  public async getAllUsers(user: UserEntity): Promise<UserEntity[]> {
     const queryBuilder = this._usersRepository.createQueryBuilder('users');
     const users = await queryBuilder
       .leftJoinAndSelect('users.userWorkspace', 'userWorkspace')
@@ -32,7 +34,7 @@ export class UsersService {
     return users;
   }
 
-  async getUser(
+  public async getUser(
     findData: FindConditions<UserEntity>,
   ): Promise<UserEntity | undefined> {
     const user = await this._usersRepository.findOne({
@@ -45,7 +47,7 @@ export class UsersService {
     return user;
   }
 
-  async update(
+  public async updateUserData(
     user: UserEntity,
     updateUserDto: UpdateUserDto,
   ): Promise<UserEntity> {
@@ -68,13 +70,13 @@ export class UsersService {
     }
 
     if (updateUserDto.password) {
-      await this.updatePassword(user.id, updateUserDto.password);
+      await this._updateUserPassword(user.id, updateUserDto.password);
     }
 
     return this.getUser({ id: user.id });
   }
 
-  async updatePassword(
+  private async _updateUserPassword(
     userId: number,
     password: string,
   ): Promise<UpdateResult> {
@@ -84,7 +86,7 @@ export class UsersService {
     });
   }
 
-  async setCurrentRefreshToken(
+  public async setCurrentRefreshToken(
     refreshToken: string,
     userId: number,
   ): Promise<void> {
@@ -92,7 +94,7 @@ export class UsersService {
     await this._usersRepository.update(userId, { currentHashedRefreshToken });
   }
 
-  async getUserIfRefreshTokenMatches(
+  public async getUserIfRefreshTokenMatches(
     refreshToken: string,
     uuid: string,
   ): Promise<UserEntity | undefined> {
@@ -108,7 +110,7 @@ export class UsersService {
     }
   }
 
-  async removeRefreshToken(userId: number): Promise<UpdateResult> {
+  public async removeRefreshToken(userId: number): Promise<UpdateResult> {
     return this._usersRepository.update(userId, {
       currentHashedRefreshToken: null,
     });

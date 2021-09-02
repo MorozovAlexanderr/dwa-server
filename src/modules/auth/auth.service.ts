@@ -15,7 +15,7 @@ export class AuthService {
     private readonly _configService: ConfigService,
   ) {}
 
-  async validateUser(
+  public async validateUser(
     email: string,
     password: string,
   ): Promise<UserEntity | null> {
@@ -32,7 +32,7 @@ export class AuthService {
     return null;
   }
 
-  getJwtAccessToken(uuid: string) {
+  public getJwtAccessToken(uuid: string) {
     const payload: TokenPayload = { uuid };
     return this._jwtService.sign(payload, {
       secret: this._configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -42,7 +42,7 @@ export class AuthService {
     });
   }
 
-  getJwtRefreshToken(uuid: string) {
+  public getJwtRefreshToken(uuid: string) {
     const payload: TokenPayload = { uuid };
     return this._jwtService.sign(payload, {
       secret: this._configService.get('JWT_REFRESH_TOKEN_SECRET'),
@@ -52,13 +52,13 @@ export class AuthService {
     });
   }
 
-  getCookieWithJwtRefreshToken(token: string) {
+  public getCookieWithJwtRefreshToken(token: string) {
     return `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this._configService.get(
       'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
     )}`;
   }
 
-  generateTokens(uuid: string) {
+  public generateTokens(uuid: string) {
     const accessToken = this.getJwtAccessToken(uuid);
     const refreshToken = this.getJwtRefreshToken(uuid);
     return { accessToken, refreshToken };

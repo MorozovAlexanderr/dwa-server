@@ -20,7 +20,7 @@ export class UsersInviteService {
     private readonly _mailerService: MailerService,
   ) {}
 
-  async getInvite(
+  public async getInvite(
     findData: FindConditions<UserInviteEntity>,
   ): Promise<UserInviteEntity | undefined> {
     const invite = await this._usersInviteRepository.findOne({
@@ -33,7 +33,7 @@ export class UsersInviteService {
     return invite;
   }
 
-  async createInvite(
+  public async createInvite(
     organization: OrganizationEntity,
     email: string,
   ): Promise<UserInviteEntity> {
@@ -53,7 +53,7 @@ export class UsersInviteService {
     return userInvite;
   }
 
-  async sendInvite(userInvite: UserInviteEntity): Promise<void> {
+  public async sendInvite(userInvite: UserInviteEntity): Promise<void> {
     const confirmLink = `${this._configService.get(
       'API_URL',
     )}/users/confirm-invite/${userInvite.uuid}`;
@@ -72,10 +72,10 @@ export class UsersInviteService {
     });
   }
 
-  async confirmInvite(uuid: string): Promise<void> {
+  public async confirmInvite(uuid: string): Promise<void> {
     const invite = await this.getInvite({ uuid });
 
-    await this._usersWorkspaceService.create(invite.user, {
+    await this._usersWorkspaceService.createWorkspace(invite.user, {
       organization: invite.organization,
     });
 
