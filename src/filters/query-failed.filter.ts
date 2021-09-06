@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { Response } from 'express';
-import { QueryErrorCodes } from './query-error-codes';
+import { ConstraintErrors } from './constraint-errors';
 import { STATUS_CODES } from 'http';
 
 @Catch(QueryFailedError)
@@ -15,7 +15,7 @@ export class QueryFailedFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const errorMessage = QueryErrorCodes[exception.code];
+    const errorMessage = ConstraintErrors[exception.constraint];
 
     const status = exception.code
       ? HttpStatus.BAD_REQUEST
