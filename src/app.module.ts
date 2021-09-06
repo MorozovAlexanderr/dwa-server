@@ -6,6 +6,7 @@ import { OrganizationsModule } from './modules/organizations/organizations.modul
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { config } from './utils/ormconfig';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       },
     }),
     configModule,
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot(config),
     UsersModule,
     OrganizationsModule,
     AuthModule,

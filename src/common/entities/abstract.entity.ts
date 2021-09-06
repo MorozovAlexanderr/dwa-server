@@ -18,12 +18,12 @@ export abstract class AbstractEntity<T extends AbstractDto = AbstractDto> {
   uuid: string;
 
   @CreateDateColumn({
-    type: 'timestamp',
+    type: 'timestamp with time zone',
   })
   createdAt: Date;
 
   @UpdateDateColumn({
-    type: 'timestamp',
+    type: 'timestamp with time zone',
     nullable: true,
   })
   updatedAt: Date;
