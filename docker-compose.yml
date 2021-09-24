@@ -1,5 +1,18 @@
 version: '3.0'
 services:
+  main:
+    container_name: main
+    build:
+      context: .
+    env_file:
+      - .env.development
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+    networks:
+      - dwa
+    depends_on:
+      - postgres
   postgres:
     container_name: postgres
     image: postgres:latest
@@ -9,3 +22,10 @@ services:
       - .env.development
     ports:
       - "5432:5432"
+    networks:
+      - dwa
+
+networks:
+  dwa:
+volumes:
+  pgdata:

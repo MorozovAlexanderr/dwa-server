@@ -13,5 +13,5 @@ export const config: ConnectionOptions = {
   entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
   migrationsRun: false,
-  migrations: ['dist/**/db/migrations/*{.ts,.js}'],
+  migrations: ['dist/**/migrations/*{.ts,.js}'],
 };

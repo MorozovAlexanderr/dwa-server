@@ -162,6 +162,9 @@ export class DocumentsController {
   }
 
   @ApiOperation({ summary: 'Update document by id' })
+  @ApiBody({
+    type: UpdateDocumentDto,
+  })
   @ApiResponse({
     status: 200,
     type: DocumentDto,

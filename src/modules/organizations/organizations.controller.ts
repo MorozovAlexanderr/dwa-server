@@ -52,6 +52,9 @@ export class OrganizationsController {
   }
 
   @ApiOperation({ summary: 'Update organization' })
+  @ApiBody({
+    type: UpdateOrganizationDto,
+  })
   @ApiResponse({
     status: 200,
     type: DocumentDto,
