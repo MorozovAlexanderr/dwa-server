@@ -13,7 +13,7 @@ mv .env.development.example .env.development
 ```
 
 ## Run
-###With Docker
+### With Docker
 ```
 docker-compose up
 ```
