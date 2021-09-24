@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -66,10 +67,14 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Update user' })
+  @ApiBody({
+    type: UpdateUserDto,
+  })
   @ApiResponse({
     status: 200,
     type: UserDto,
   })
+  @UseGuards(JwtAuthGuard)
   @Patch('update-current')
   async setUserData(
     @AuthUser() user: UserEntity,
