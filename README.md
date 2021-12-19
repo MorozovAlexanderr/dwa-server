@@ -8,8 +8,8 @@ Backend part for DWA project using NestJS framework
 # 1. Install the required dependencies
 npm install
 
-# 2. Rename the .env.development.example filename to .env.development and set your local variables
-mv .env.development.example .env.development
+# 2. Rename the .env.example filename to .env and set your local variables
+mv .env.example .env
 ```
 
 ## Run

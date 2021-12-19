@@ -3,7 +3,7 @@ import { ConnectionOptions } from 'typeorm';
 
 const configService = new ConfigService();
 
-export const config: ConnectionOptions = {
+const config: ConnectionOptions = {
   type: 'postgres',
   host: configService.get('POSTGRES_HOST'),
   port: configService.get('POSTGRES_PORT'),
@@ -11,7 +11,12 @@ export const config: ConnectionOptions = {
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DB'),
   entities: ['dist/**/*.entity{.ts,.js}'],
-  synchronize: true,
-  migrationsRun: false,
+  synchronize: false,
+  migrationsRun: true,
   migrations: ['dist/**/migrations/*{.ts,.js}'],
+  cli: {
+    migrationsDir: 'src/database/migrations',
+  },
 };
+
+export = config;

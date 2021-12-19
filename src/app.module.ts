@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { configModule } from './configure.root';
 import { UsersModule } from './modules/users/users.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { config } from './utils/ormconfig';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     MailerModule.forRoot({
       transport: {
         host: process.env.SMTP_HOST,
@@ -21,8 +21,24 @@ import { config } from './utils/ormconfig';
         },
       },
     }),
-    configModule,
-    TypeOrmModule.forRoot(config),
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('POSTGRES_HOST'),
+        port: configService.get('POSTGRES_PORT'),
+        username: configService.get('POSTGRES_USER'),
+        password: configService.get('POSTGRES_PASSWORD'),
+        database: configService.get('POSTGRES_DB'),
+        entities: ['dist/**/*.entity{.ts,.js}'],
+        synchronize: false,
+        migrationsRun: true,
+        migrations: ['dist/**/migrations/*{.ts,.js}'],
+        cli: {
+          migrationsDir: 'src/database/migrations',
+        },
+      }),
+      inject: [ConfigService],
+    }),
     UsersModule,
     OrganizationsModule,
     AuthModule,
