@@ -36,6 +36,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         cli: {
           migrationsDir: 'src/database/migrations',
         },
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
       inject: [ConfigService],
     }),
