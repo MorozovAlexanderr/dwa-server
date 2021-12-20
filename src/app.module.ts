@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HealthCheckerModule } from './modules/health-checker/health-checker.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     OrganizationsModule,
     AuthModule,
     DocumentsModule,
+    HealthCheckerModule,
   ],
   controllers: [],
   providers: [],
