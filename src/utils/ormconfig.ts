@@ -17,6 +17,7 @@ const config: ConnectionOptions = {
   cli: {
     migrationsDir: 'src/database/migrations',
   },
+  ssl: { rejectUnauthorized: false },
 };
 
 export = config;
