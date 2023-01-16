@@ -37,9 +37,6 @@ import { HealthCheckerModule } from './modules/health-checker/health-checker.mod
         cli: {
           migrationsDir: 'src/database/migrations',
         },
-        ssl: {
-          rejectUnauthorized: false,
-        },
       }),
       inject: [ConfigService],
     }),
